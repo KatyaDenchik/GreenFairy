@@ -1,18 +1,26 @@
 using GreenFairy.Data;
+using GreenFairy.Data.Authentication;
 using GreenFairy.DomainLayer.DataBase;
 using GreenFairy.DomainLayer.DataBase.Entities;
-
-var repository = new Repository();
-var admins = repository.Get<AdminEntity>(s => true);
-
+using GreenFairy.DomainLayer.DataBase.Entities.Abstract;
+using GreenFairy.ViewModels;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
+builder.Services.AddAuthenticationCore();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddScoped<ProtectedSessionStorage>();
+builder.Services.AddSingleton<Repository>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>(); 
+builder.Services.AddSingleton<DataBaseView>();
+builder.Services.AddSingleton<UserAccountService>();
+builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddSingleton<WeatherForecastService>();
-
+builder.Services.AddSingleton<EntityService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

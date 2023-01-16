@@ -1,10 +1,6 @@
 ﻿using GreenFairy.DomainLayer.DataBase.Entities.Abstract;
 using GreenFairy.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections;
 
 namespace GreenFairy.DomainLayer.DataBase.Entities
 {
@@ -15,7 +11,22 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         public ICollection<PlantEntity> Plants { get; set; }
         public DeliveryKind DeliveryKind { get; set; }
         public PaymentKind PaymentKind { get; set; }
-        public string Comment { get; set; }
+        public string Comment { get; set; } = string.Empty;
+
+        public IEnumerator<object> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveToDB(Repository repository)
+        {
+            repository.Create(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

@@ -1,0 +1,61 @@
+﻿@page "/login"
+@using GreenFairy.Data.Authentication
+@inject UserAccountService service
+@inject IJSRuntime js
+@inject AuthenticationStateProvider provider
+@inject NavigationManager navManager
+
+<div class="row">
+	<div class="col-lg-4 offset-lg-4 pt-4 border">
+		<div>
+			<h3>Login</h3>
+		</div>
+		<div class="mb-3">
+			<label>Логін:</label>
+			<input @bind="model.UserName" class="form-control" placeholder="User Name"/>
+		</div>
+		<div class="mb-3">
+			<label>Пароль:</label>
+			<input @bind="model.Password" class="form-control" placeholder="Password"/>
+		</div>
+		<div class="mb-3 d-grid gap-2">
+			<button @onclick="Authenticate" class ="btn btn-primary">Login</button>
+		</div>
+	</div>
+</div>
+
+@code {
+	private class Model
+	{
+		public string UserName { get; set; }
+		public string Password { get; set; }
+	}
+
+	private Model model = new Model();
+
+	private async Task Authenticate()
+	{
+		var userAccount = service.GetUserByName(model.UserName);
+		if (userAccount is null)
+		{
+			await js.InvokeVoidAsync("alert", "Такого користувача не існує!");
+			return;
+		}
+
+		if (userAccount.Password != model.Password)
+		{
+			await js.InvokeVoidAsync("alert", "Ви ввели невірний пароль, спробуйте ще раз.");
+			return;
+		}
+
+		var customProvider = provider as CustomAuthenticationStateProvider;
+
+		await customProvider.UpdateAuthenticationState(new UserSession
+			{
+				UserName = userAccount.Name,
+				Role = userAccount.Role
+			});
+
+			navManager.NavigateTo("/", true);
+	}
+}

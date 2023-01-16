@@ -1,48 +1,54 @@
 ﻿@page "/fetchdata"
-
-<PageTitle>Weather forecast</PageTitle>
-
+@attribute [Authorize(Roles = "Admin")]
+@inject EntityService entityService
+@inject Repository repo
+@inject DataBaseView dataBaseView;
+<PageTitle >Information</PageTitle>
 @using GreenFairy.Data
-@inject WeatherForecastService ForecastService
+@using GreenFairy.ViewModels
+@using GreenFairy.DomainLayer.DataBase
+@using GreenFairy.DomainLayer.DataBase.Entities
 
-<h1>Weather forecast</h1>
+<h1>Information</h1>
 
-<p>This component demonstrates fetching data from a service.</p>
+<div>
+<select name="entities" id="entities" @bind="@dataBaseView.TabelName">
 
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
+        @foreach (var type in dataBaseView.EntityTypes)
+        {
+                 <option value="@type.Name">@type.Name</option>
+        }
+
+</select>
+</div>
+
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
+            @foreach (var header in dataBaseView.EntityHeaders)
+            {
+                 <th>@header</th> 
+            }
+            </tr> 
+
+
+        @foreach (var entity in dataBaseView.Entities)
+        {
+                    <tr>
+                @foreach (var item in entity)
+                {
+                            <td>
+                         <RadzenTextBox Value="@item.ToString()" Change="(a)=>{dataBaseView.Change(item, a);}"></RadzenTextBox>
+                            </td>
+                }
+                  </tr>
+        }  
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
         </tbody>
     </table>
-}
 
-@code {
-    private WeatherForecast[]? forecasts;
+    <RadzenButton Click="dataBaseView.Save">Зберегти</RadzenButton>
 
-    protected override async Task OnInitializedAsync()
-    {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
-    }
-}
+    <RadzenButton Click="dataBaseView.Add">Додати</RadzenButton>
+
