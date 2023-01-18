@@ -12,25 +12,6 @@ namespace GreenFairy.Data
             this.repository = repository;
         }
 
-        public IEnumerable<string> GetEntityHeaders(Type type)
-        {
-            var properties = type.GetProperties();
-            var result = properties.Select(p => p.Name).ToList();
-            result.Remove(result.FirstOrDefault(s=>s.Equals("Id", StringComparison.InvariantCultureIgnoreCase)));
-            return result;
-        }
-
-        public IEnumerable<IEnumerable<string>> GetEntitiesString(IEnumerable<IEntity> entities)
-        {
-            List<List<string>> result = new List<List<string>>();
-            foreach (var entity in entities)
-            {
-                var stringEntity = entity.GetType().GetProperties().Select(s => s.GetValue(entity)?.ToString());
-                result.Add(stringEntity.ToList());
-            }
-            return result;
-        }
-
         public IEnumerable<IEntity> GetEntities(Type type)
         {
             return type.Name switch

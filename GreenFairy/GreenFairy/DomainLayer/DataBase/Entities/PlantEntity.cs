@@ -12,7 +12,12 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         public int Amount { get; set; }
         public double Price { get; set; }
         public string Description { get; set; } = string.Empty;
-        public byte[] Photo { get; set; }
+        public byte[] Photo { get; set; } = new byte[0];
+
+        public void Delete(Repository repository)
+        {
+            throw new NotImplementedException();
+        }
 
         public IEnumerator<object> GetEnumerator()
         {
@@ -28,5 +33,6 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         {
             throw new NotImplementedException();
         }
+
     }
 }

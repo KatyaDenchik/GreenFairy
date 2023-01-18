@@ -3,8 +3,9 @@
 @inject EntityService entityService
 @inject Repository repo
 @inject DataBaseView dataBaseView;
-<PageTitle >Information</PageTitle>
+<PageTitle>Information</PageTitle>
 @using GreenFairy.Data
+@using GreenFairy.DomainLayer.DataBase.Entities.Abstract
 @using GreenFairy.ViewModels
 @using GreenFairy.DomainLayer.DataBase
 @using GreenFairy.DomainLayer.DataBase.Entities
@@ -12,43 +13,55 @@
 <h1>Information</h1>
 
 <div>
-<select name="entities" id="entities" @bind="@dataBaseView.TabelName">
+    <select name="entities" id="entities" @bind="@dataBaseView.TabelName">
 
         @foreach (var type in dataBaseView.EntityTypes)
         {
-                 <option value="@type.Name">@type.Name</option>
+            <option value="@type.Name">@type.Name</option>
         }
 
-</select>
+    </select>
 </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-            @foreach (var header in dataBaseView.EntityHeaders)
-            {
-                 <th>@header</th> 
-            }
-            </tr> 
+<RadzenDataGrid @ref=ordersGrid AllowFiltering="true" AllowRowSelectOnRowClick="true" AllowColumnResize="true" AllowColumnPicking="true"
+                AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" 
+                PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@selectedEntity
+                Data="@dataBaseView.Entities" Count="@dataBaseView.Entities.Count" TItem="IEntity">
+    <Columns>
 
-
-        @foreach (var entity in dataBaseView.Entities)
+        @foreach (var property in dataBaseView.Type.GetProperties())
         {
-                    <tr>
-                @foreach (var item in entity)
-                {
-                            <td>
-                         <RadzenTextBox Value="@item.ToString()" Change="(a)=>{dataBaseView.Change(item, a);}"></RadzenTextBox>
-                            </td>
-                }
-                  </tr>
-        }  
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+            <RadzenDataGridColumn TItem="IEntity" Title="@property.Name" Sortable="true" Filterable="true" Property="@property.Name" Width="80px" TextAlign="TextAlign.Center">
+                <Template Context="entity">
+                    
+                    @if (property.Name == "Id")
+                    {
+                        <RadzenLabel>@entity.Id</RadzenLabel>
+                    }
+                    else if (property.Name == "Photo")
+                    {
 
-    <RadzenButton Click="dataBaseView.Save">Зберегти</RadzenButton>
+                    }
+                    else
+                    {
+                        <RadzenTextBox Value="@property.GetValue(entity)?.ToString()" Change="(newValue)=>{dataBaseView.Change(entity, property, newValue);}"></RadzenTextBox>
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+        }
 
-    <RadzenButton Click="dataBaseView.Add">Додати</RadzenButton>
+    </Columns>
+</RadzenDataGrid>
+
+<RadzenButton Click="dataBaseView.Save">Зберегти</RadzenButton>
+
+<RadzenButton Click="()=>{dataBaseView.Add();  ordersGrid.Reload();}">Додати</RadzenButton>
+
+<RadzenButton Click="()=>{dataBaseView.Delete(selectedEntity); ordersGrid.Reload();}">Видалити</RadzenButton>
+
+@code{
+    RadzenDataGrid<IEntity>? ordersGrid;
+
+    IList<IEntity> selectedEntity = new List<IEntity>();
+}
 

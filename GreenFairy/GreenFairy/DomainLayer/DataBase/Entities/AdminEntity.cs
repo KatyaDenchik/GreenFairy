@@ -14,5 +14,9 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         {
             repository.Create(this);
         }
+        public override void Delete(Repository repository)
+        {
+            repository.Delete(this);
+        }
     }
 }

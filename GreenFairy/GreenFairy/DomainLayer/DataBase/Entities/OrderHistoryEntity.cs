@@ -5,9 +5,14 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
 {
     public class OrderHistoryEntity : IEntity
     {
-        public ClientEntity Client { get; set; }
+        public ClientEntity Client { get; set; } = new ClientEntity();
         public int Id { get; set; }
-        public ICollection<OrderEntity> Orders { get; set; }
+        public ICollection<OrderEntity> Orders { get; set; } = new List<OrderEntity>();
+
+        public void Delete(Repository repository)
+        {
+            throw new NotImplementedException();
+        }
 
         public IEnumerator<object> GetEnumerator()
         {

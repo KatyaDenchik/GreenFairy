@@ -1,8 +1,6 @@
 using GreenFairy.Data;
 using GreenFairy.Data.Authentication;
 using GreenFairy.DomainLayer.DataBase;
-using GreenFairy.DomainLayer.DataBase.Entities;
-using GreenFairy.DomainLayer.DataBase.Entities.Abstract;
 using GreenFairy.ViewModels;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
@@ -15,7 +13,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<ProtectedSessionStorage>();
 builder.Services.AddSingleton<Repository>();
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>(); 
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddSingleton<DataBaseView>();
 builder.Services.AddSingleton<UserAccountService>();
 builder.Services.AddScoped<ContextMenuService>();

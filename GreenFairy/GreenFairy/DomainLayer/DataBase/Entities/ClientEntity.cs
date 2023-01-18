@@ -1,5 +1,4 @@
 ﻿using GreenFairy.DomainLayer.DataBase.Entities.Abstract;
-using System.Collections;
 
 namespace GreenFairy.DomainLayer.DataBase.Entities
 {
@@ -9,6 +8,11 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         public string Surname { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public int Phone { get; set; }
+
+        public override void Delete(Repository repository)
+        {
+            throw new NotImplementedException();
+        }
 
         public override IEnumerator<object> GetEnumerator()
         {

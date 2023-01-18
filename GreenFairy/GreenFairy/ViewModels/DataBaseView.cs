@@ -1,14 +1,9 @@
 ﻿using GreenFairy.Data;
+using GreenFairy.DomainLayer.DataBase;
 using GreenFairy.DomainLayer.DataBase.Entities;
 using GreenFairy.DomainLayer.DataBase.Entities.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Prism;
 using Prism.Mvvm;
-using GreenFairy.DomainLayer.DataBase;
+using System.Reflection;
 
 namespace GreenFairy.ViewModels
 {
@@ -32,9 +27,8 @@ namespace GreenFairy.ViewModels
       }};
 
         private string tabelName;
-        public string TabelName { get { return tabelName; } set { SetProperty(ref tabelName,value); } }
+        public string TabelName { get { return tabelName; } set { SetProperty(ref tabelName, value); } }
         public Type Type => EntityTypes.First(s => s.Name == TabelName).Type;
-        public IEnumerable<string> EntityHeaders => entityService.GetEntityHeaders(EntityTypes.First(s => s.Name == TabelName).Type);
 
         public List<IEntity> Entities;
 
@@ -43,7 +37,7 @@ namespace GreenFairy.ViewModels
             this.entityService = entityService;
             this.repository = repository;
 
-            TabelName = EntityTypes.First().Name; 
+            TabelName = EntityTypes.First().Name;
 
             Entities = entityService.GetEntities(Type).ToList();
 
@@ -59,13 +53,23 @@ namespace GreenFairy.ViewModels
         public void Add()
         {
             IEntity entity = (IEntity)Activator.CreateInstance(Type);
+            entity.Id = Entities.Count + 1;
             Entities.Add(entity);
         }
 
-        public void Change(object oldValue, string newValue)
+        public void Change(object entity, PropertyInfo property, string value)
         {
-          var entity =  Entities.First(s => s.Any(t => t == oldValue));
-          
+            property.SetValue(entity, value);
         }
+
+        public void Delete(IList<IEntity> entities)
+        {
+            foreach (var entity in entities)
+            {
+                entity.Delete(repository);
+                Entities.Remove(entity);
+            }
+        }
+
     }
 }

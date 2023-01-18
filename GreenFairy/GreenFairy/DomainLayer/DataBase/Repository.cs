@@ -41,6 +41,12 @@ namespace GreenFairy.DomainLayer.DataBase
             dbSet.Remove(entity);
             await context.SaveChangesAsync();
         }
+        public async void Delete<T>(IEnumerable<T> entities) where T : class, IEntity
+        {
+            var dbSet = context.Set<T>();
+            dbSet.RemoveRange(entities);
+            await context.SaveChangesAsync();
+        }
         public async void Delete<T>(Func<T, bool> specification) where T : class, IEntity
         {
             var dbSet = context.Set<T>();
