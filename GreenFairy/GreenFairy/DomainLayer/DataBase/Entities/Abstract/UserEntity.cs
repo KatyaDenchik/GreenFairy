@@ -15,7 +15,7 @@ namespace GreenFairy.DomainLayer.DataBase.Entities.Abstract
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+           return GetEnumerator();
         }
     }
 }

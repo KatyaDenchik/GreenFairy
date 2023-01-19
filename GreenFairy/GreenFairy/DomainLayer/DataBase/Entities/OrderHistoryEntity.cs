@@ -5,18 +5,22 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
 {
     public class OrderHistoryEntity : IEntity
     {
-        public ClientEntity Client { get; set; } = new ClientEntity();
         public int Id { get; set; }
+        public ClientEntity Client { get; set; } = new ClientEntity();
+
         public ICollection<OrderEntity> Orders { get; set; } = new List<OrderEntity>();
 
         public void Delete(Repository repository)
         {
-            throw new NotImplementedException();
+            repository.Delete(this);
         }
 
         public IEnumerator<object> GetEnumerator()
         {
-            throw new NotImplementedException();
+            yield return Id;
+            yield return Client;
+            yield return Orders;
+
         }
 
         public void SaveToDB(Repository repository)
@@ -26,7 +30,7 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return GetEnumerator();
         }
     }
 }

@@ -6,6 +6,7 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
     {
         public override IEnumerator<object> GetEnumerator()
         {
+            yield return Id;
             yield return Email;
             yield return Password;
         }

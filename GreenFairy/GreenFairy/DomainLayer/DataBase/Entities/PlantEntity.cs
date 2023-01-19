@@ -1,5 +1,7 @@
 ﻿using GreenFairy.DomainLayer.DataBase.Entities.Abstract;
 using System.Collections;
+using System.Net;
+using System.Numerics;
 
 namespace GreenFairy.DomainLayer.DataBase.Entities
 {
@@ -16,12 +18,19 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
 
         public void Delete(Repository repository)
         {
-            throw new NotImplementedException();
+            repository.Delete(this);
         }
 
         public IEnumerator<object> GetEnumerator()
         {
-            throw new NotImplementedException();
+            yield return Id;
+            yield return Species;
+            yield return Group;
+            yield return Name;
+            yield return Amount;
+            yield return Price;
+            yield return Description;
+            yield return Photo;
         }
 
         public void SaveToDB(Repository repository)

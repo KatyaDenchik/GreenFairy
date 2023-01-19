@@ -17,7 +17,6 @@ builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStat
 builder.Services.AddSingleton<DataBaseView>();
 builder.Services.AddSingleton<UserAccountService>();
 builder.Services.AddScoped<ContextMenuService>();
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<EntityService>();
 var app = builder.Build();
 

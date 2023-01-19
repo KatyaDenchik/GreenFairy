@@ -40,9 +40,9 @@ namespace GreenFairy.ViewModels
             TabelName = EntityTypes.First().Name;
 
             Entities = entityService.GetEntities(Type).ToList();
-
             this.PropertyChanged += (a, e) => { Entities = entityService.GetEntities(Type).ToList(); };
         }
+
         public void Save()
         {
             foreach (var entity in Entities)

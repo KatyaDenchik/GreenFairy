@@ -23,35 +23,44 @@
     </select>
 </div>
 
-<RadzenDataGrid @ref=ordersGrid AllowFiltering="true" AllowRowSelectOnRowClick="true" AllowColumnResize="true" AllowColumnPicking="true"
-                AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" 
+@if (entity == null)
+{
+    <p>Завантаження.......</p>
+}
+else
+{
+    <RadzenDataGrid @ref=ordersGrid AllowFiltering="true" AllowRowSelectOnRowClick="true" AllowColumnResize="true" AllowColumnPicking="true"
+                AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true"
                 PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@selectedEntity
-                Data="@dataBaseView.Entities" Count="@dataBaseView.Entities.Count" TItem="IEntity">
-    <Columns>
+                Data="@entity" Count="@dataBaseView.Entities.Count" TItem="IEntity">
+        <Columns>
 
-        @foreach (var property in dataBaseView.Type.GetProperties())
-        {
-            <RadzenDataGridColumn TItem="IEntity" Title="@property.Name" Sortable="true" Filterable="true" Property="@property.Name" Width="80px" TextAlign="TextAlign.Center">
-                <Template Context="entity">
-                    
-                    @if (property.Name == "Id")
-                    {
-                        <RadzenLabel>@entity.Id</RadzenLabel>
-                    }
-                    else if (property.Name == "Photo")
-                    {
+            @foreach (var property in dataBaseView.Type.GetProperties())
+            {
+                <RadzenDataGridColumn TItem="IEntity" Title="@property.Name" Sortable="true" Filterable="true" Property="@property.Name" Width="80px" TextAlign="TextAlign.Center">
+                    <Template Context="entity">
 
-                    }
-                    else
-                    {
-                        <RadzenTextBox Value="@property.GetValue(entity)?.ToString()" Change="(newValue)=>{dataBaseView.Change(entity, property, newValue);}"></RadzenTextBox>
-                    }
-                </Template>
-            </RadzenDataGridColumn>
-        }
+                        @if (property.Name == "Id")
+                        {
+                            <RadzenLabel>@entity.Id</RadzenLabel>
+                        }
+                        else if (property.Name == "Photo")
+                        {
 
-    </Columns>
-</RadzenDataGrid>
+                        }
+                        else
+                        {
+                            <RadzenTextBox Value="@property.GetValue(entity)?.ToString()" Change="(newValue)=>{dataBaseView.Change(entity, property, newValue);}"></RadzenTextBox>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+            }
+
+        </Columns>
+    </RadzenDataGrid>
+}
+
+
 
 <RadzenButton Click="dataBaseView.Save">Зберегти</RadzenButton>
 
@@ -63,5 +72,18 @@
     RadzenDataGrid<IEntity>? ordersGrid;
 
     IList<IEntity> selectedEntity = new List<IEntity>();
+
+    IEnumerable<IEntity> entity;
+
+    protected override async Task OnInitializedAsync()
+    {
+        dataBaseView.PropertyChanged += async (o, a) => 
+        {
+            entity = null;
+            entity = await Task.Run(() => dataBaseView.Entities);
+            this.StateHasChanged();
+        };
+        entity = await Task.Run(() => dataBaseView.Entities);
+    }
 }
 

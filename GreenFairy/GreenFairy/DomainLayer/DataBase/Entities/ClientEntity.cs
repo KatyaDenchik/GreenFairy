@@ -11,11 +11,12 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
 
         public override void Delete(Repository repository)
         {
-            throw new NotImplementedException();
+            repository.Delete(this);
         }
 
         public override IEnumerator<object> GetEnumerator()
         {
+            yield return Id;
             yield return Email;
             yield return Password;
             yield return Name;

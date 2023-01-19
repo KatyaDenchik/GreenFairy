@@ -8,19 +8,24 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
     {
         public int Id { get; set; }
         public ClientEntity Client { get; set; } = new ClientEntity();
-        public ICollection<PlantEntity> Plants { get; set; }
+        public IEnumerable<PlantEntity> Plants { get; set; } = new List<PlantEntity>();
         public DeliveryKind DeliveryKind { get; set; }
         public PaymentKind PaymentKind { get; set; }
         public string Comment { get; set; } = string.Empty;
 
         public void Delete(Repository repository)
         {
-            throw new NotImplementedException();
+            repository.Delete(this);
         }
 
         public IEnumerator<object> GetEnumerator()
         {
-            throw new NotImplementedException();
+            yield return Id;
+            yield return Client;
+            yield return Plants;
+            yield return DeliveryKind;
+            yield return PaymentKind;
+            yield return Comment;
         }
 
         public void SaveToDB(Repository repository)
@@ -30,7 +35,7 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return GetEnumerator();
         }
     }
 
