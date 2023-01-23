@@ -59,7 +59,19 @@ namespace GreenFairy.ViewModels
 
         public void Change(object entity, PropertyInfo property, string value)
         {
-            property.SetValue(entity, value);
+            var newValue = new object();
+            if (property.PropertyType.Name == "ClientEntity")
+            {
+                var id = int.Parse(value);
+                newValue = repository.Get<ClientEntity>(s => s.Id == id).FirstOrDefault();
+                repository.Delete<ClientEntity>(s => s.Id == id);
+
+            }
+            else
+            {
+                newValue = Convert.ChangeType(value, property.PropertyType);
+            }
+            property.SetValue(entity, newValue);
         }
 
         public void Delete(IList<IEntity> entities)

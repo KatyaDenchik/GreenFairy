@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GreenFairy.DomainLayer.DataBase.Entities.AdminEntity">
+    <Position X="5.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAAAAAAAAEAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>DomainLayer\DataBase\Entities\AdminEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GreenFairy.DomainLayer.DataBase.Entities.ClientEntity">
+    <Position X="9.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAAAAQABAEAAAACAAACIAAAAAA=</HashCode>
+      <FileName>DomainLayer\DataBase\Entities\ClientEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GreenFairy.DomainLayer.DataBase.Entities.OrderEntity" BaseTypeListCollapsed="true">
+    <Position X="11" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAASAAAEAAAAABAAAAAAAAABAAEAAAAEAAACAAABAAQ=</HashCode>
+      <FileName>DomainLayer\DataBase\Entities\OrderEntity.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.1" Collapsed="true" />
+  </Class>
+  <Class Name="GreenFairy.DomainLayer.DataBase.Entities.OrderHistoryEntity" BaseTypeListCollapsed="true">
+    <Position X="12.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAECAAAAAAAAABAAAAAAAAAAAAEAAAAEAAACAAAAAAQ=</HashCode>
+      <FileName>DomainLayer\DataBase\Entities\OrderHistoryEntity.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="GreenFairy.DomainLayer.DataBase.Entities.PlantEntity" BaseTypeListCollapsed="true">
+    <Position X="3.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAGAEAAAQAgADAAAAAAAASAAAEAAAAEAAACAAAAAAA=</HashCode>
+      <FileName>DomainLayer\DataBase\Entities\PlantEntity.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="GreenFairy.DomainLayer.DataBase.Entities.Abstract.UserEntity">
+    <Position X="7.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAABAAAAAAAAAAAAEAAAAGAAACAAAAAAA=</HashCode>
+      <FileName>DomainLayer\DataBase\Entities\Abstract\UserEntity.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="GreenFairy.DomainLayer.DataBase.Entities.Abstract.IEntity">
+    <Position X="8.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>DomainLayer\DataBase\Entities\Abstract\IEntity.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -11,7 +11,7 @@ namespace GreenFairy.DomainLayer.DataBase
         {
             if (firstConnection)
             {
-                //Database.Migrate();
+                Database.Migrate();
                 firstConnection = false;
             }
         }

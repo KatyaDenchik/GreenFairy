@@ -10,6 +10,11 @@ namespace GreenFairy.DomainLayer.DataBase.Entities.Abstract
 
         public abstract void Delete(Repository repository);
 
+        public override string ToString()
+        {
+            return Id.ToString();
+        }
+
         public abstract IEnumerator<object> GetEnumerator();
         public abstract void SaveToDB(Repository repository);
 

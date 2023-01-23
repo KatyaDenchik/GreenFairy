@@ -12,7 +12,7 @@ builder.Services.AddAuthenticationCore();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<ProtectedSessionStorage>();
-builder.Services.AddSingleton<Repository>();
+builder.Services.AddTransient<Repository>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddSingleton<DataBaseView>();
 builder.Services.AddSingleton<UserAccountService>();
