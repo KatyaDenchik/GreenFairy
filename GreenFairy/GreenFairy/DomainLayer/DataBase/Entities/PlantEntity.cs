@@ -16,6 +16,7 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         public string Description { get; set; } = string.Empty;
         public byte[] Photo { get; set; } = new byte[0];
 
+        public virtual ICollection<OrderEntity> Orders { get; set; }
         public void Delete(Repository repository)
         {
             repository.Delete(this);

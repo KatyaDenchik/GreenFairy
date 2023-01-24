@@ -82,6 +82,11 @@ else
                             }
 
                         }
+                        else if (property.PropertyType.Name.Contains("Collection"))
+                        {
+                            <RadzenTextBox Value="@GetCollection(property.GetValue(entity))" Change="(newValue)=>{dataBaseView.Change(entity, property, newValue);}"></RadzenTextBox>
+
+                        }
                         else
                         {
                             <RadzenTextBox Value="@property.GetValue(entity)?.ToString()" Change="(newValue)=>{dataBaseView.Change(entity, property, newValue);}"></RadzenTextBox>
@@ -118,6 +123,20 @@ else
             this.StateHasChanged();
         };
         entity = await Task.Run(() => dataBaseView.Entities);
+    }
+
+    private string GetCollection(object obj)
+    {
+        var str = string.Empty;
+
+        var collection = obj as IEnumerable<IEntity>;
+
+        if (collection is null)
+        {
+        return str;
+        }
+        str = string.Join(", ", collection.Select(s => s.Id));
+        return str;
     }
 }
 

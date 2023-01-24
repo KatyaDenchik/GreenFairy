@@ -6,9 +6,9 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
     public class OrderHistoryEntity : IEntity
     {
         public int Id { get; set; }
-        public ClientEntity Client { get; set; } = new ClientEntity();
+        public virtual ClientEntity Client { get; set; }
 
-        public ICollection<OrderEntity> Orders { get; set; } = new List<OrderEntity>();
+        public virtual ICollection<OrderEntity> Orders { get; set; }
 
         public void Delete(Repository repository)
         {

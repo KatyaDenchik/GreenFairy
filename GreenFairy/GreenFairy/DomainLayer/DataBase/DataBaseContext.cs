@@ -7,11 +7,12 @@ namespace GreenFairy.DomainLayer.DataBase
     {
         private const string standartPath = "./DataBaseGreenFairy.db";
         private static bool firstConnection = true;
+        //Add-Migration 24_01_2023
         public DataBaseContext()
         {
             if (firstConnection)
             {
-                Database.Migrate();
+                //Database.Migrate();
                 firstConnection = false;
             }
         }
@@ -20,6 +21,7 @@ namespace GreenFairy.DomainLayer.DataBase
         public DbSet<OrderEntity> OrderEntities { get; set; }
         public DbSet<OrderHistoryEntity> OrderHistoryEntities { get; set; }
         public DbSet<PlantEntity> PlantEntities { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source={standartPath}");
+        protected override void OnConfiguring(DbContextOptionsBuilder options)=>options.UseLazyLoadingProxies().UseSqlite($"Data Source={standartPath}");
+        
     }
 }

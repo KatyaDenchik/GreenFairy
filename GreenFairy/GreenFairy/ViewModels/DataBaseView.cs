@@ -64,8 +64,20 @@ namespace GreenFairy.ViewModels
             {
                 var id = int.Parse(value);
                 newValue = repository.Get<ClientEntity>(s => s.Id == id).FirstOrDefault();
-                repository.Delete<ClientEntity>(s => s.Id == id);
+                //repository.Delete<ClientEntity>(s => s.Id == id);
 
+            }
+            else if (property.Name == "Plants")
+            {
+                var ids = new List<int>();
+
+                foreach (var item in value.Replace(" ", "").Split(","))
+                {
+                    ids.Add(int.Parse(item));
+                }
+                var t = repository.Get<PlantEntity>(s => ids.Contains(s.Id)).ToList();
+                //repository.Delete(t);
+                newValue = t;
             }
             else
             {

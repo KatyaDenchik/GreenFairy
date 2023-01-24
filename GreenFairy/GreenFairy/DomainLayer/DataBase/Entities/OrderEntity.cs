@@ -7,8 +7,8 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
     public class OrderEntity : IEntity
     {
         public int Id { get; set; }
-        public ClientEntity Client { get; set; } = new ClientEntity();
-        public IEnumerable<PlantEntity> Plants { get; set; } = new List<PlantEntity>();
+        public virtual ClientEntity Client { get; set; }
+        public virtual ICollection<PlantEntity> Plants { get; set; }
         public DeliveryKind DeliveryKind { get; set; }
         public PaymentKind PaymentKind { get; set; }
         public string Comment { get; set; } = string.Empty;
