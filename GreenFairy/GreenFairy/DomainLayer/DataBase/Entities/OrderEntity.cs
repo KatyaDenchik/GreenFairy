@@ -1,5 +1,6 @@
 ﻿using GreenFairy.DomainLayer.DataBase.Entities.Abstract;
 using GreenFairy.Enums;
+using Microsoft.VisualBasic;
 using System.Collections;
 
 namespace GreenFairy.DomainLayer.DataBase.Entities
@@ -12,6 +13,8 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         public DeliveryKind DeliveryKind { get; set; }
         public PaymentKind PaymentKind { get; set; }
         public string Comment { get; set; } = string.Empty;
+        public int PlantsCount { get; set; }
+        public DateTime DateAndTime { get; set; }
 
         public void Delete(Repository repository)
         {
@@ -26,6 +29,8 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
             yield return DeliveryKind;
             yield return PaymentKind;
             yield return Comment;
+            yield return PlantsCount;
+            yield return DateAndTime;
         }
 
         public void SaveToDB(Repository repository)

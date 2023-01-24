@@ -64,7 +64,6 @@ namespace GreenFairy.ViewModels
             {
                 var id = int.Parse(value);
                 newValue = repository.Get<ClientEntity>(s => s.Id == id).FirstOrDefault();
-                //repository.Delete<ClientEntity>(s => s.Id == id);
 
             }
             else if (property.Name == "Plants")
@@ -75,9 +74,11 @@ namespace GreenFairy.ViewModels
                 {
                     ids.Add(int.Parse(item));
                 }
-                var t = repository.Get<PlantEntity>(s => ids.Contains(s.Id)).ToList();
-                //repository.Delete(t);
-                newValue = t;
+                newValue = repository.Get<PlantEntity>(s => ids.Contains(s.Id)).ToList();
+            }
+            else if (property.Name.Contains("Kind"))
+            {
+                newValue = Enum.Parse(property.PropertyType, value);
             }
             else
             {

@@ -87,38 +87,23 @@ namespace GreenFairy.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("DeliveryKind")
-                        .HasColumnType("INTEGER");
+                    b.Property<DateTime>("DateAndTime")
+                        .HasColumnType("TEXT");
 
-                    b.Property<int?>("OrderHistoryEntityId")
+                    b.Property<int>("DeliveryKind")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("PaymentKind")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("PlantsCount")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("OrderHistoryEntityId");
 
                     b.ToTable("OrderEntities");
-                });
-
-            modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.OrderHistoryEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ClientId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
-
-                    b.ToTable("OrderHistoryEntities");
                 });
 
             modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.PlantEntity", b =>
@@ -181,21 +166,6 @@ namespace GreenFairy.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GreenFairy.DomainLayer.DataBase.Entities.OrderHistoryEntity", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("OrderHistoryEntityId");
-
-                    b.Navigation("Client");
-                });
-
-            modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.OrderHistoryEntity", b =>
-                {
-                    b.HasOne("GreenFairy.DomainLayer.DataBase.Entities.ClientEntity", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Client");
                 });
 
@@ -215,11 +185,6 @@ namespace GreenFairy.Migrations
                 });
 
             modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.ClientEntity", b =>
-                {
-                    b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.OrderHistoryEntity", b =>
                 {
                     b.Navigation("Orders");
                 });
