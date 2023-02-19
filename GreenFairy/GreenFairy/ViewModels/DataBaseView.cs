@@ -45,10 +45,18 @@ namespace GreenFairy.ViewModels
 
         public void Save()
         {
-            foreach (var entity in Entities)
+            try
             {
-                entity.SaveToDB(repository);
+                foreach (var entity in Entities)
+                {
+                    entity.SaveToDB(repository);
+                }
             }
+            catch (Exception)
+            {
+
+            }
+           
         }
         public void Add()
         {
@@ -59,32 +67,40 @@ namespace GreenFairy.ViewModels
 
         public void Change(object entity, PropertyInfo property, string value)
         {
-            var newValue = new object();
-            if (property.PropertyType.Name == "ClientEntity")
+            try
             {
-                var id = int.Parse(value);
-                newValue = repository.Get<ClientEntity>(s => s.Id == id).FirstOrDefault();
-
-            }
-            else if (property.Name == "Plants")
-            {
-                var ids = new List<int>();
-
-                foreach (var item in value.Replace(" ", "").Split(","))
+                var newValue = new object();
+                if (property.PropertyType.Name == "ClientEntity")
                 {
-                    ids.Add(int.Parse(item));
+                    var id = int.Parse(value);
+                    newValue = repository.Get<ClientEntity>(s => s.Id == id).FirstOrDefault();
+
                 }
-                newValue = repository.Get<PlantEntity>(s => ids.Contains(s.Id)).ToList();
+                else if (property.Name == "Plants")
+                {
+                    var ids = new List<int>();
+
+                    foreach (var item in value.Replace(" ", "").Split(","))
+                    {
+                        ids.Add(int.Parse(item));
+                    }
+                    newValue = repository.Get<PlantEntity>(s => ids.Contains(s.Id)).ToList();
+                }
+                else if (property.Name.Contains("Kind"))
+                {
+                    newValue = Enum.Parse(property.PropertyType, value);
+                }
+                else
+                {
+                    newValue = Convert.ChangeType(value, property.PropertyType);
+                }
+                property.SetValue(entity, newValue);
             }
-            else if (property.Name.Contains("Kind"))
+            catch (Exception e)
             {
-                newValue = Enum.Parse(property.PropertyType, value);
+                Console.WriteLine(e);
             }
-            else
-            {
-                newValue = Convert.ChangeType(value, property.PropertyType);
-            }
-            property.SetValue(entity, newValue);
+            
         }
 
         public void Delete(IList<IEntity> entities)

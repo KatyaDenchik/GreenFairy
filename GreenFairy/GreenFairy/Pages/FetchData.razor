@@ -23,16 +23,21 @@
     </select>
 </div>
 
-@if (entity == null)
+@if (entities == null)
 {
-    <p>Завантаження.......</p>
+    <div class="col-md-4 p-3">
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Завантаження</RadzenText>
+            <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+        </RadzenCard>
+    </div>
 }
 else
 {
     <RadzenDataGrid @ref=ordersGrid AllowFiltering="true" AllowRowSelectOnRowClick="true" AllowColumnResize="true" AllowColumnPicking="true"
                 AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true"
                 PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@selectedEntity
-                Data="@entity" Count="@dataBaseView.Entities.Count" TItem="IEntity">
+                Data="@entities" Count="@dataBaseView.Entities.Count" TItem="IEntity">
         <Columns>
 
             @foreach (var property in dataBaseView.Type.GetProperties())
@@ -112,17 +117,17 @@ else
 
     IList<IEntity> selectedEntity = new List<IEntity>();
 
-    IEnumerable<IEntity> entity;
+    IEnumerable<IEntity> entities;
 
     protected override async Task OnInitializedAsync()
     {
         dataBaseView.PropertyChanged += async (o, a) =>
         {
-            entity = null;
-            entity = await Task.Run(() => dataBaseView.Entities);
+            entities = null;
+            entities = await Task.Run(() => dataBaseView.Entities);
             this.StateHasChanged();
         };
-        entity = await Task.Run(() => dataBaseView.Entities);
+        entities = await Task.Run(() => dataBaseView.Entities);
     }
 
     private string GetCollection(object obj)

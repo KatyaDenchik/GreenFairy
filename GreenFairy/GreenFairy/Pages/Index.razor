@@ -1,36 +1,123 @@
 ﻿@page "/"
 @inject IJSRuntime js
-<PageTitle>Index</PageTitle>
-<AuthorizeView>
-	<Authorized>
-		<h1>Вітаю, @context.User.Identity.Name!</h1>
-	</Authorized>
-	<NotAuthorized>
-		<h1>Вітаю!</h1>
-	</NotAuthorized>
+@inject EntityService entityService
+@inject Repository repo
+@inject DataBaseView dataBaseView;
+<PageTitle>Green Фея</PageTitle>
+@using GreenFairy.Data
+@using GreenFairy.DomainLayer.DataBase.Entities.Abstract
+@using GreenFairy.ViewModels
+@using GreenFairy.DomainLayer.DataBase
+@using GreenFairy.DomainLayer.DataBase.Entities
 
-</AuthorizeView>
-<h1>Hello, world!</h1>
+<h1>
+    Green Фея <RadzenImage class="col-xl-6"
+                           Path="https://i.pinimg.com/564x/c0/a3/0e/c0a30e6ab58ff8f798adef9a34846938.jpg"
+                           Style="width: 5%; margin: 1rem;">
+              </RadzenImage></h1>
 
-Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
 
-<AuthorizeView>
-	<Authorized>
-		<br />
-		<button class ="btn btn-outline-primary"  @onclick="DisplayGreetingAleart"></button>
-	</Authorized>
-</AuthorizeView>
+<div class="container">
+    <div class="row py-5">
+        <div class="col">
+            <div style="display: flex; align-items: center; margin-bottom: 16px">
+                <RadzenCheckBox @bind-Value="@allowVirtualization" Name="allowVirtualization" />
+                <RadzenLabel Text="Allow virtualization" Component="allowVirtualization" Style="margin-left: 8px; margin-right: 32px; vertical-align: middle;" />
+            </div>
+            <RadzenCard>
+                <RadzenDataList AllowVirtualization=@allowVirtualization Style="@(allowVirtualization ? "height:400px;overflow:auto;" : "")"
+                                WrapItems="@(!allowVirtualization)" AllowPaging="@(!allowVirtualization)"
+                                Data="@plants" TItem="PlantEntity" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
+                       <Template Context="plant">
+                        <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
+                            <div class="container">
+                                <div class="row" style="margin-left: calc(var(--bs-gutter-x) * -1); margin-right: calc(var(--bs-gutter-x) * -1)">
+                                    <div class="col-lg-3 p-3 product-title">
+                                        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-color-secondary">@(plant.Photo)</RadzenText>
+                                        </div>
+                                        <div class="col-lg-7 p-3">
+                                            <div class="row d-flex">
+                                                <div class="col-md-6 col-lg-2">
+                                                    @*<RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="mb-0">Назва рослини</RadzenText>*@
+                                                    <RadzenText TextStyle="TextStyle.Body2" class="mb-sm-2 mb-lg-0">@(plant.Name)</RadzenText>
+                                                </div>
+                                                <div class="col-md-6 col-lg-2">
+                                                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="mb-0">Кількість в наявності</RadzenText>
+                                                    <RadzenText TextStyle="TextStyle.Body2" class="mb-sm-2 mb-lg-0">@(plant.Amount)</RadzenText>
+                                                </div>
+                                                <div class="col-md-6 order-first order-lg-last col-lg-3 text-sm-start text-lg-end mb-3 mb-lg-0">
+                                                    <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Shade="Shade.Lighter" class="price-badge" Text=@($"{String.Format(new System.Globalization.CultureInfo("UAH"), "{0:C}", plant.Price)}") />
+                                                </div>
+                                                <div class="col-lg-3 p-3">
+                                                    <RadzenButton Text="Опис рослини" class="w-100" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-2 p-3">
+                                            <RadzenButton Text="Додати до кошику" class="w-100" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </RadzenCard>
+                       </Template>
+                    </RadzenDataList>
 
-@code{
-	[CascadingParameter]
-	private Task<AuthenticationState> authenticationState { get; set; }
+                </RadzenCard>
+            </div>
+        </div>
+    </div>
 
-	private async Task DisplayGreetingAleart()
-	{
-		var status = await authenticationState;
-		var message = $"Вітаю {status.User.Identity.Name}";
-		await js.InvokeVoidAsync("alert", message);
-	}
+    <style>
+        .product-title {
+            min-height: 72px;
+            background-color: var(--rz-secondary-lighter);
+        }
+
+        .price-badge {
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 20px;
+            padding: 8px;
+        }
+    </style>
+
+    @code {
+    bool allowVirtualization;
+
+    IEnumerable<PlantEntity> plants;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+
+        dataBaseView.PropertyChanged += async (o, a) =>
+        {
+            plants = null;
+            plants = await Task.Run(() => repo.Get<PlantEntity>());
+            this.StateHasChanged();
+        };
+        plants = await Task.Run(() => repo.Get<PlantEntity>());
+    }
+
+    private string GetCollection(object obj)
+    {
+        var str = string.Empty;
+
+        var collection = obj as IEnumerable<PlantEntity>;
+
+        if (collection is null)
+        {
+            return str;
+        }
+        str = string.Join(", ", collection.Select(s => s.Id));
+        return str;
+    }
 }
+
+
+
+
+
