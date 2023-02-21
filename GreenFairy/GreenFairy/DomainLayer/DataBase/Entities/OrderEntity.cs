@@ -21,26 +21,9 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
             repository.Delete(this);
         }
 
-        public IEnumerator<object> GetEnumerator()
-        {
-            yield return Id;
-            yield return Client;
-            yield return Plants;
-            yield return DeliveryKind;
-            yield return PaymentKind;
-            yield return Comment;
-            yield return PlantsCount;
-            yield return DateAndTime;
-        }
-
         public void SaveToDB(Repository repository)
         {
             repository.Create(this);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 

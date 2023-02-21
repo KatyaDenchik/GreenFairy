@@ -14,17 +14,6 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
             repository.Delete(this);
         }
 
-        public override IEnumerator<object> GetEnumerator()
-        {
-            yield return Id;
-            yield return Email;
-            yield return Password;
-            yield return Name;
-            yield return Surname;
-            yield return Address;
-            yield return Phone;
-        }
-
         public override void SaveToDB(Repository repository)
         {
             repository.Create(this);

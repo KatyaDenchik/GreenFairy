@@ -14,7 +14,8 @@
     Green Фея <RadzenImage class="col-xl-6"
                            Path="https://i.pinimg.com/564x/c0/a3/0e/c0a30e6ab58ff8f798adef9a34846938.jpg"
                            Style="width: 5%; margin: 1rem;">
-              </RadzenImage></h1>
+    </RadzenImage>
+</h1>
 
 
 
@@ -29,7 +30,7 @@
                 <RadzenDataList AllowVirtualization=@allowVirtualization Style="@(allowVirtualization ? "height:400px;overflow:auto;" : "")"
                                 WrapItems="@(!allowVirtualization)" AllowPaging="@(!allowVirtualization)"
                                 Data="@plants" TItem="PlantEntity" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
-                       <Template Context="plant">
+                    <Template Context="plant">
                         <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
                             <div class="container">
                                 <div class="row" style="margin-left: calc(var(--bs-gutter-x) * -1); margin-right: calc(var(--bs-gutter-x) * -1)">
@@ -54,14 +55,14 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="col-lg-2 p-3">
                                             <RadzenButton Text="Додати до кошику" class="w-100" />
                                         </div>
                                     </div>
                                 </div>
                             </RadzenCard>
-                       </Template>
+                        </Template>
                     </RadzenDataList>
 
                 </RadzenCard>
@@ -93,13 +94,9 @@
         await base.OnInitializedAsync();
 
 
-        dataBaseView.PropertyChanged += async (o, a) =>
-        {
-            plants = null;
-            plants = await Task.Run(() => repo.Get<PlantEntity>());
-            this.StateHasChanged();
-        };
+        plants = null;
         plants = await Task.Run(() => repo.Get<PlantEntity>());
+        this.StateHasChanged();
     }
 
     private string GetCollection(object obj)

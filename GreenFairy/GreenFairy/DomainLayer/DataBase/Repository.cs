@@ -45,29 +45,54 @@ namespace GreenFairy.DomainLayer.DataBase
         /// Метод, который возвращает коллекцию сущностей, которые соответсвуют условию 
         /// </summary>
         /// <typeparam name="T">Тип сущности</typeparam>
-        /// <param name="specification">Условие, которому должна ссответсвовать сущность</param>
+        /// <param name="specification">Условие, которому должна соответсвовать сущность</param>
         /// <returns>Коллекция сущностей, соответсвующие условию</returns>
         public IEnumerable<T> Get<T>(Func<T, bool> specification) where T : class, IEntity
         {
             var dbSet = Context.Set<T>();
             return dbSet.Where(specification);
         }
+        
+        /// <summary>
+        /// Метод, который возвращает коллекцию сущностей определенного типа
+        /// </summary>
+        /// <typeparam name="T">Тип сущности</typeparam>
+        /// <returns>Коллекцию сущностей </returns>
         public IEnumerable<T> Get<T>() where T : class, IEntity
         {
             return Get<T>(s => true);
         }
+
+        /// <summary>
+        /// Метод, который удаляет конкретную сущность
+        /// </summary>
+        /// <typeparam name="T">Тип сущности</typeparam>
+        /// <param name="entity">Конкретная сущность</param>
         public void Delete<T>(T entity) where T : class, IEntity
         {
+            //получаем ссылку на таблицу
             var dbSet = Context.Set<T>();
             dbSet.Remove(entity);
             Context.SaveChanges();
         }
+
+        /// <summary>
+        /// Метод, который удаляет коллекцию сущностей
+        /// </summary>
+        /// <typeparam name="T">Тип сущности</typeparam>
+        /// <param name="entities">Конкретные сущности</param>
         public void Delete<T>(IEnumerable<T> entities) where T : class, IEntity
         {
             var dbSet = Context.Set<T>();
             dbSet.RemoveRange(entities);
             Context.SaveChanges();
         }
+
+        /// <summary>
+        /// Метод, который удаляет коллекцию сущностей, которые соответсвуют условию
+        /// </summary>
+        /// <typeparam name="T">Тип сущностей</typeparam>
+        /// <param name="specification">Условие</param>
         public async void Delete<T>(Func<T, bool> specification) where T : class, IEntity
         {
             Delete<T>(Get(specification));

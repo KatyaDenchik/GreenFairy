@@ -9,18 +9,12 @@ namespace GreenFairy.DomainLayer.DataBase.Entities.Abstract
         public string Password { get; set; } = string.Empty;
 
         public abstract void Delete(Repository repository);
+        public abstract void SaveToDB(Repository repository);
 
+        // Можем передавать ID юзера в заказы, вместо указания имени и фамилии
         public override string ToString()
         {
             return Id.ToString();
-        }
-
-        public abstract IEnumerator<object> GetEnumerator();
-        public abstract void SaveToDB(Repository repository);
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-           return GetEnumerator();
-        }
+        } 
     }
 }

@@ -26,20 +26,29 @@ namespace GreenFairy.ViewModels
       new EntityModel{Type= typeof(OrderEntity), Name = "Замовлення"
       }};
 
+        // Имя таблицы
         private string tabelName;
+        // Перерисовка таблиц
         public string TabelName { get { return tabelName; } set { SetProperty(ref tabelName, value); } }
+        // Если выбираем админа, то тип будет AdminEntity
         public Type Type => EntityTypes.First(s => s.Name == TabelName).Type;
 
         public List<IEntity> Entities;
 
+        /// <summary>
+        /// Метод, который формирует таблицу сущностей после того, как был указан тип
+        /// </summary>
+        /// <param name="entityService">Сервис, который вытиаскивает нужный нам тип сущности</param>
+        /// <param name="repository"></param>
         public DataBaseView(EntityService entityService, Repository repository)
         {
             this.entityService = entityService;
             this.repository = repository;
 
             TabelName = EntityTypes.First().Name;
-
+            //Вытаскиваем все сущности выбранного типа
             Entities = entityService.GetEntities(Type).ToList();
+            //Вытаскиваем все сущности выбранного типа заново, если был поменян тип 
             this.PropertyChanged += (a, e) => { Entities = entityService.GetEntities(Type).ToList(); };
         }
 
@@ -60,11 +69,17 @@ namespace GreenFairy.ViewModels
         }
         public void Add()
         {
+            // Создание сущности конкретного типа
             IEntity entity = (IEntity)Activator.CreateInstance(Type);
-            entity.Id = Entities.Count + 1;
+            entity.Id = Entities.Last().Id + 1;
             Entities.Add(entity);
         }
-
+        /// <summary>
+        /// Метод, который меняет конкретное поле сущности
+        /// </summary>
+        /// <param name="entity">Сущность</param>
+        /// <param name="property">Значение поля</param>
+        /// <param name="value">На что поменялось поле</param>
         public void Change(object entity, PropertyInfo property, string value)
         {
             try

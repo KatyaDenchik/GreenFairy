@@ -1,6 +1,6 @@
 ﻿namespace GreenFairy.DomainLayer.DataBase.Entities.Abstract
 {
-    public interface IEntity : IEnumerable<object>
+    public interface IEntity
     {
         int Id { get; set; }
 
