@@ -1,14 +1,17 @@
 using GreenFairy.Data;
 using GreenFairy.Data.Authentication;
+using GreenFairy.Data.Controllers;
 using GreenFairy.DomainLayer.DataBase;
 using GreenFairy.ViewModels;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.Extensions.DependencyInjection;
 using Radzen;
-
+//UploadController
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddAuthenticationCore();
+builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<ProtectedSessionStorage>();
@@ -27,7 +30,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
@@ -35,6 +37,15 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+      name: "default",
+      pattern: "{controller=Home}/{action=Index}/{id?}");
+    endpoints.MapControllers();
+    endpoints.MapBlazorHub();
+    endpoints.MapFallbackToPage("/_Host");
+});
+
 
 app.Run();
