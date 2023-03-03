@@ -17,12 +17,13 @@ namespace GreenFairy.DomainLayer.DataBase
         /// Переменная, указывающая первое ли подключение
         /// </summary>
         private static bool firstConnection = true;
-        
-        //Add-Migration Init
+
+        //Add-Migration SecondMigration
         public DataBaseContext()
         {
             if (firstConnection)
             {
+                //Закоментировать перед миграцией
                 Database.Migrate();
                 firstConnection = false;
             }

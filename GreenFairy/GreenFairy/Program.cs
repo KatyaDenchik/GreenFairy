@@ -11,7 +11,6 @@ using Radzen;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddAuthenticationCore();
-builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<ProtectedSessionStorage>();
@@ -21,6 +20,10 @@ builder.Services.AddSingleton<DataBaseView>();
 builder.Services.AddSingleton<UserAccountService>();
 builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddSingleton<EntityService>();
+builder.Services.AddServerSideBlazor().AddHubOptions(o =>
+{
+    o.MaximumReceiveMessageSize = 10 * 1024 * 1024;
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,15 +40,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapBlazorHub();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-      name: "default",
-      pattern: "{controller=Home}/{action=Index}/{id?}");
-    endpoints.MapControllers();
-    endpoints.MapBlazorHub();
-    endpoints.MapFallbackToPage("/_Host");
-});
+app.MapFallbackToPage("/_Host");
 
 
 app.Run();

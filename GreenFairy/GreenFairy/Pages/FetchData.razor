@@ -34,8 +34,8 @@
 }
 else
 {
-    <RadzenUpload Auto="true" Accept="image/*" Url="upload/single" Complete="Complete" Error="Error" Progress="@(args=>OnProgress(args, "upload"))"></RadzenUpload>
-    <RadzenProgressBar Value="progress" Unit="info" Visible="@(progress>0)"></RadzenProgressBar>
+    @*<RadzenUpload Auto="true" Accept="image/*" Url="upload/single" Complete="Complete" Error="Error" Progress="@(args=>OnProgress(args, "upload"))"></RadzenUpload>
+    <RadzenProgressBar Value="progress" Unit="info" Visible="@(progress>0)"></RadzenProgressBar>*@
      <RadzenDataGrid @ref=ordersGrid AllowFiltering="true" AllowRowSelectOnRowClick="true" AllowColumnResize="true" AllowColumnPicking="true"
                 AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true"
                 PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@selectedEntity
@@ -53,9 +53,17 @@ else
                         }
                         else if (property.Name == "Photo")
                         {
-                            @*<RadzenFileInput Name="Test" Change=@(args => OnChange(args, "FileInput")) @bind-bind-Value="@t" @bind-FileName=@fileName @bind-FileSize=@fileSize TValue="object" class="w-100" />*@
+                            <RadzenCard>
+                                <div>
+                                <RadzenFileInput @bind-FileName=@fileName @bind-FileSize=@fileSize TValue="string" class="w-100"
+                                     ValueChanged=@(newValue=>{dataBaseView.Change(entity, property, newValue);}) Error=@(args => OnError(args, "FileInput")) />
+                                </div> 
+                                <div>
+                                    <RadzenImage class="img-fluid" Path="@property.GetValue(entity).ToString()"></RadzenImage>
+                                </div>
+                            </RadzenCard>
 
-                            @*@switch (entity.Id)
+                           @* @switch (entity.Id)
                             {
                                 case 1:
                                     <RadzenImage class="img-fluid" Path="https://yaskravaklumba.com.ua/image/cache/catalog/mnogoletniki/geyhera/cherry-cola-1-500x500.jpg"></RadzenImage>
@@ -122,10 +130,6 @@ else
 
     IEnumerable<IEntity> entities;
     IEnumerable<PlantEntity> plants;
-     void HandleFileSelected(IFileListEntry[] files)
-    {
-        // Do something with the files, e.g., read them
-    }
     int progress;
     string info;
     void OnProgress(UploadProgressArgs args, string name)
@@ -134,14 +138,12 @@ else
         progress = args.Progress;
     }
 
-    void Complete(UploadCompleteEventArgs e)
+    void OnChange(string value, string name)
     {
         
     }
-
-    void Error(UploadErrorEventArgs e)
+    void OnError(UploadErrorEventArgs args, string name)
     {
-
     }
     string fileName;
     long? fileSize;

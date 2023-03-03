@@ -29,7 +29,8 @@ namespace GreenFairy.ViewModels
         // Имя таблицы
         private string tabelName;
         // Перерисовка таблиц
-        public string TabelName { get { return tabelName; } set { SetProperty(ref tabelName, value); } }
+        public string TabelName { get { return tabelName; } set { 
+                SetProperty(ref tabelName, value); } }
         // Если выбираем админа, то тип будет AdminEntity
         public Type Type => EntityTypes.First(s => s.Name == TabelName).Type;
 
@@ -49,7 +50,8 @@ namespace GreenFairy.ViewModels
             //Вытаскиваем все сущности выбранного типа
             Entities = entityService.GetEntities(Type).ToList();
             //Вытаскиваем все сущности выбранного типа заново, если был поменян тип 
-            this.PropertyChanged += (a, e) => { Entities = entityService.GetEntities(Type).ToList(); };
+            this.PropertyChanged += (a, e) => { 
+                Entities = entityService.GetEntities(Type).ToList(); };
         }
 
         public void Save()

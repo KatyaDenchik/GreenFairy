@@ -14,7 +14,7 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         public int Amount { get; set; }
         public double Price { get; set; }
         public string Description { get; set; } = string.Empty;
-        public byte[] Photo { get; set; } = new byte[0];
+        public string Photo { get; set; } = string.Empty;
 
         public virtual ICollection<OrderEntity> Orders { get; set; }
 

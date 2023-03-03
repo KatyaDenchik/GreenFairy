@@ -17,113 +17,43 @@
     </RadzenImage>
 </h1>
 
-@*<RadzenPanel AllowCollapse="true" Class="rz-my-10 rz-mx-auto" Style="width: 700px;" >
-    <ChildContent>
-        <RadzenCard  class="rz-mt-4">
-            <RadzenDataList PageSize="4" WrapItems="true" AllowPaging="true" 
-                            Data="@plants" TItem="PlantEntity">
-                <Template Context="order">
-                    <RadzenCard Style="width: 250px">
-                        <RadzenRow>
-                            <RadzenColumn Size="8" class="rz-text-truncate">
-                                <RadzenBadge BadgeStyle="BadgeStyle.Light" Text=@($"{order.OrderID}") class="me-1" />
-                                <b>@(order.ShipName)</b>
-                            </RadzenColumn>
-                            <RadzenColumn Size="4" class="rz-text-align-end">
-                                <RadzenBadge BadgeStyle="BadgeStyle.Success" Text=@($"{String.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", order.Freight)}") />
-                            </RadzenColumn>
-                        </RadzenRow>
-                        <hr style="border: none; background-color: var(--rz-text-disabled-color); height: 1px; margin: 1rem 0;" />
-                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem">
-                            <RadzenImage Path="@order.Employee?.Photo" Style="width: 80px; height: 80px; border-radius: 50%" />
-                            <RadzenStack Gap="0">
-                                <RadzenText TextStyle="TextStyle.H6" Class="rz-mb-0">@(order.Employee?.FirstName + " " + order.Employee?.LastName)</RadzenText>
-                                <RadzenText TextStyle="TextStyle.Body1">@order.ShipAddress</RadzenText>
-                                <RadzenText TextStyle="TextStyle.Body2">@(order.ShipCity), @(order.ShipCountry)</RadzenText>
-                            </RadzenStack>
+<RadzenCard class="rz-mt-4">
+    <RadzenDataList PageSize="@size" WrapItems="true" AllowPaging="true"
+                    Data="@plants" TItem="PlantEntity">
+        <Template Context="plant">
+            <RadzenCard Style="width: 250px">
+                <RadzenRow>
+                    <RadzenColumn Size="4" class="rz-text-truncate">
+                        <RadzenText TextStyle="TextStyle.Caption" Class="rz-mb-0">@(plant.Group)</RadzenText>
+                        </RadzenColumn>
+                        <RadzenColumn Size="4" class="rz-text-align-end">
+                            <RadzenBadge BadgeStyle="BadgeStyle.Success" Text=@($"{String.Format(new System.Globalization.CultureInfo("uk-UA"), "{0:C}", plant.Price)}") />
+                        </RadzenColumn>
+                    </RadzenRow>
+                    <hr style="border: none; background-color: var(--rz-text-disabled-color); height: 1px; margin: 1rem 0;" />
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem">
+                        <RadzenImage Path="@plant.Photo.ToString()" Style="width: 250px; height: 250px; @*border-radius: 50%*@" />
+                        <RadzenStack Gap="0">
+                            <RadzenText TextStyle="TextStyle.H6" Class="rz-mb-0">@(plant.Name)</RadzenText>
+                            <div class="rz-p-12 rz-text-align-center">
+                                <RadzenLink Text="Опис рослини" class="rz-ripple" />
+                            </div>
+
+                            <RadzenButton Text="Додати до кошику" class="w-100" />
                         </RadzenStack>
-                    </RadzenCard>
-                </Template>
-            </RadzenDataList>
-        </RadzenCard>
-    </ChildContent>
-    <SummaryTemplate>
-        <RadzenCard class="rz-mt-4">
-            <b>@orders.Count() Orders</b>
-        </RadzenCard>
-    </SummaryTemplate>
-</RadzenPanel>*@
 
-<div class="container">
-    <div class="row py-5">
-        <div class="col">
-            <div style="display: flex; align-items: center; margin-bottom: 16px">
-                <RadzenCheckBox @bind-Value="@allowVirtualization" Name="allowVirtualization" />
-                <RadzenLabel Text="Allow virtualization" Component="allowVirtualization" Style="margin-left: 8px; margin-right: 32px; vertical-align: middle;" />
-            </div>
-            <RadzenCard>
-                <RadzenDataList AllowVirtualization=@allowVirtualization Style="@(allowVirtualization ? "height:400px;overflow:auto;" : "")"
-                                WrapItems="@(!allowVirtualization)" AllowPaging="@(!allowVirtualization)"
-                                Data="@plants" TItem="PlantEntity" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
-                    <Template Context="plant">
-                        <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
-                            <div class="container">
-                                <div class="row" style="margin-left: calc(var(--bs-gutter-x) * -1); margin-right: calc(var(--bs-gutter-x) * -1)">
-                                    <div class="col-lg-3 p-3 product-title">
-                                        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="rz-color-secondary">@(plant.Photo)</RadzenText>
-                                        </div>
-                                        <div class="col-lg-7 p-3">
-                                            <div class="row d-flex">
-                                                <div class="col-md-6 col-lg-2">
-                                                    @*<RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="mb-0">Назва рослини</RadzenText>*@
-                                                    <RadzenText TextStyle="TextStyle.Body2" class="mb-sm-2 mb-lg-0">@(plant.Name)</RadzenText>
-                                                </div>
-                                                <div class="col-md-6 col-lg-2">
-                                                    <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H5" class="mb-0">Кількість в наявності</RadzenText>
-                                                    <RadzenText TextStyle="TextStyle.Body2" class="mb-sm-2 mb-lg-0">@(plant.Amount)</RadzenText>
-                                                </div>
-                                                <div class="col-md-6 order-first order-lg-last col-lg-3 text-sm-start text-lg-end mb-3 mb-lg-0">
-                                                    <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Shade="Shade.Lighter" class="price-badge" Text=@($"{String.Format(new System.Globalization.CultureInfo("UAH"), "{0:C}", plant.Price)}") />
-                                                </div>
-                                                <div class="col-lg-3 p-3">
-                                                    <RadzenButton Text="Опис рослини" class="w-100" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-2 p-3">
-                                            <RadzenButton Text="Додати до кошику" class="w-100" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </RadzenCard>
-                        </Template>
-                    </RadzenDataList>
-
+                    </RadzenStack>
                 </RadzenCard>
-            </div>
-        </div>
-    </div>
+            </Template>
+        </RadzenDataList>
+    </RadzenCard>
 
-    <style>
-        .product-title {
-            min-height: 72px;
-            background-color: var(--rz-secondary-lighter);
-        }
-
-        .price-badge {
-            font-size: 16px;
-            font-weight: bold;
-            line-height: 20px;
-            padding: 8px;
-        }
-    </style>
 
     @code {
     bool allowVirtualization;
 
     IEnumerable<PlantEntity> plants;
-
+    int size => plants?.Count() ?? 0;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
