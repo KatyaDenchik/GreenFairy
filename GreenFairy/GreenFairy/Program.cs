@@ -19,6 +19,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStat
 builder.Services.AddSingleton<DataBaseView>();
 builder.Services.AddSingleton<UserAccountService>();
 builder.Services.AddScoped<ContextMenuService>();
+builder.Services.AddScoped<DialogService>();
 builder.Services.AddSingleton<EntityService>();
 builder.Services.AddServerSideBlazor().AddHubOptions(o =>
 {

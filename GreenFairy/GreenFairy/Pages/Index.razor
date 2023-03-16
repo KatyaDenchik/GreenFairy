@@ -2,7 +2,9 @@
 @inject IJSRuntime js
 @inject EntityService entityService
 @inject Repository repo
-@inject DataBaseView dataBaseView;
+@inject DataBaseView dataBaseView
+@inject DialogService DialogService
+
 <PageTitle>Green Фея</PageTitle>
 @using GreenFairy.Data
 @using GreenFairy.DomainLayer.DataBase.Entities.Abstract
@@ -10,14 +12,15 @@
 @using GreenFairy.DomainLayer.DataBase
 @using GreenFairy.DomainLayer.DataBase.Entities
 
+
 <h1>
     Green Фея <RadzenImage class="col-xl-6"
                            Path="https://i.pinimg.com/564x/c0/a3/0e/c0a30e6ab58ff8f798adef9a34846938.jpg"
                            Style="width: 5%; margin: 1rem;">
     </RadzenImage>
 </h1>
-
-<RadzenCard class="rz-mt-4">
+<RadzenDialog/>
+<RadzenCard class="rz-mt-4" >
     <RadzenDataList PageSize="@size" WrapItems="true" AllowPaging="true"
                     Data="@plants" TItem="PlantEntity">
         <Template Context="plant">
@@ -30,16 +33,25 @@
                             <RadzenBadge BadgeStyle="BadgeStyle.Success" Text=@($"{String.Format(new System.Globalization.CultureInfo("uk-UA"), "{0:C}", plant.Price)}") />
                         </RadzenColumn>
                     </RadzenRow>
-                    <hr style="border: none; background-color: var(--rz-text-disabled-color); height: 1px; margin: 1rem 0;" />
+                    <hr style="border: none; background-color: var(--rz-white); height: 1px; margin: 1rem 0;" />
                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem">
-                        <RadzenImage Path="@plant.Photo.ToString()" Style="width: 250px; height: 250px; @*border-radius: 50%*@" />
+                        <div class="rz-p-12 rz-text-align-center">
+                            <RadzenImage Click="@(()=>{OpenPlant(plant);})" Path="@plant.Photo.ToString()" Style="width: 250px; height: 250px;" />
+                        </div>
+                        <hr style="border: none; background-color: var(--rz-white); height: 1px; margin: 1rem 0;" />
                         <RadzenStack Gap="0">
-                            <RadzenText TextStyle="TextStyle.H6" Class="rz-mb-0">@(plant.Name)</RadzenText>
-                            <div class="rz-p-12 rz-text-align-center">
-                                <RadzenLink Text="Опис рослини" class="rz-ripple" />
-                            </div>
 
-                            <RadzenButton Text="Додати до кошику" class="w-100" />
+                            <RadzenText TextStyle="TextStyle.H6" Class="rz-mb-0">@(plant.Name)</RadzenText>
+                            <div class="rz-p-12 rz-text-align-center " style="margin: 10px">
+                                <a class="link-info" onclick="@(()=>{OpenPlant(plant);})">Опис рослини </a>
+                            </div>
+                            <div class="rz-p-12 rz-text-align-center " style="margin: 10px">
+                                <RadzenButton Text="Додати до кошику"/>
+                            </div>
+                           
+
+
+
                         </RadzenStack>
 
                     </RadzenStack>
@@ -53,6 +65,7 @@
     bool allowVirtualization;
 
     IEnumerable<PlantEntity> plants;
+    IList<PlantEntity> selectedPlant;
     int size => plants?.Count() ?? 0;
     protected override async Task OnInitializedAsync()
     {
@@ -62,6 +75,7 @@
         plants = null;
         plants = await Task.Run(() => repo.Get<PlantEntity>());
         this.StateHasChanged();
+
     }
 
     private string GetCollection(object obj)
@@ -77,7 +91,16 @@
         str = string.Join(", ", collection.Select(s => s.Id));
         return str;
     }
+
+    public async Task OpenPlant(PlantEntity plant)
+    {
+        Task.Delay(200).Wait();
+        await DialogService.OpenAsync<PlantDescription>($"{plant.Name}",
+        new Dictionary<string, object>() { { "Plant", plant } },
+             options: new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true, CloseDialogOnEsc = true });
+    }
 }
+
 
 
 

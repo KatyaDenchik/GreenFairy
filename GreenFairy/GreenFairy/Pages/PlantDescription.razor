@@ -1,0 +1,29 @@
+﻿@page "/PlantDescription"
+@using GreenFairy.DomainLayer.DataBase.Entities
+@inject Radzen.DialogService dialogService
+
+<div class="row">
+    <RadzenText Text="@Plant.Description"></RadzenText>
+</div>
+<div class="row">
+    <div class="col-md-12 text-left">
+    <RadzenBadge BadgeStyle="BadgeStyle.Success" Style="width: 120px " Text=@($"Ціна: {String.Format(new System.Globalization.CultureInfo("uk-UA"), "{0:C}", Plant.Price)}") />
+    <RadzenBadge BadgeStyle="BadgeStyle.Success" Style="scrollbar-arrow-color " Text=@($"Кількість рослин в наявноті: {Plant.Amount}") />
+    </div>
+    <div class="col-md-12 text-end" >
+        
+        <RadzenButton Click="@((args) => dialogService.Close(false))" Variant="Variant.Flat" ButtonStyle="ButtonStyle.Light" Text="Cancel" Style="width: 120px" class="me-1" />
+        <RadzenButton Click="@((args) => dialogService.Close(true))" Variant="Variant.Flat" Text="OK" Style="width: 120px" />
+    </div>
+</div>
+@code 
+{
+    [Parameter]
+    public PlantEntity Plant { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+       
+
+    }
+}
