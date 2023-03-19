@@ -1,6 +1,11 @@
 ﻿@page "/PlantDescription"
 @using GreenFairy.DomainLayer.DataBase.Entities
 @inject Radzen.DialogService dialogService
+<div style="display: grid;
+  grid-template-columns: 630px auto;">
+    <div><h1>@Plant.Name</h1></div>
+    <div style="align-content:flex-end"><RadzenButton Click="@((args) => dialogService.Close(false))" Variant="Variant.Flat" ButtonStyle="ButtonStyle.Light" Text="X" Style="width: 20px; grid" class="me-1" /></div>
+</div>
 
 <div class="row">
     <RadzenText Text="@Plant.Description"></RadzenText>
@@ -11,8 +16,6 @@
     <RadzenBadge BadgeStyle="BadgeStyle.Success" Style="scrollbar-arrow-color " Text=@($"Кількість рослин в наявноті: {Plant.Amount}") />
     </div>
     <div class="col-md-12 text-end" >
-        
-        <RadzenButton Click="@((args) => dialogService.Close(false))" Variant="Variant.Flat" ButtonStyle="ButtonStyle.Light" Text="Cancel" Style="width: 120px" class="me-1" />
         <RadzenButton Click="@((args) => dialogService.Close(true))" Variant="Variant.Flat" Text="OK" Style="width: 120px" />
     </div>
 </div>

@@ -5,6 +5,7 @@ namespace GreenFairy.Data.Authentication
 {
     public class UserAccountService
     {
+        public static UserAccount CurrentUser = new UserAccount { Name = "TEST", , Role = "Anon" };
         private List<UserAccount> users = new List<UserAccount>();
         public UserAccountService(Repository repository)
         {
@@ -19,7 +20,15 @@ namespace GreenFairy.Data.Authentication
 
         public UserAccount? GetUserByName(string name)
         {
-            return users.FirstOrDefault(s => s.Name == name);
+            var user = users.FirstOrDefault(s => s.Name == name);
+            if (user == null)
+            {
+                var anon =new  AnonUserAccaunt();
+                anon.Name = name;
+                users.Add(anon);
+                return anon;
+            }
+            return user;
         }
     }
 }

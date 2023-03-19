@@ -4,9 +4,12 @@
 @inject Repository repo
 @inject DataBaseView dataBaseView
 @inject DialogService DialogService
+@inject UserAccountService service
+@inject AuthenticationStateProvider provider
 
 <PageTitle>Green Фея</PageTitle>
 @using GreenFairy.Data
+@using GreenFairy.Data.Authentication;
 @using GreenFairy.DomainLayer.DataBase.Entities.Abstract
 @using GreenFairy.ViewModels
 @using GreenFairy.DomainLayer.DataBase

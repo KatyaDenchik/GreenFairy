@@ -2,7 +2,7 @@
 @using GreenFairy.Data.Authentication
 @inject UserAccountService service
 @inject IJSRuntime js
-@inject AuthenticationStateProvider provider
+@inject CustomAuthenticationStateProvider provider
 @inject NavigationManager navManager
 
 <div class="row">
@@ -49,13 +49,11 @@
 		}
 
 		var customProvider = provider as CustomAuthenticationStateProvider;
-
 		await customProvider.UpdateAuthenticationState(new UserSession
 			{
 				UserName = userAccount.Name,
 				Role = userAccount.Role
-			});
-
+			}); 
 			navManager.NavigateTo("/", true);
 	}
 }

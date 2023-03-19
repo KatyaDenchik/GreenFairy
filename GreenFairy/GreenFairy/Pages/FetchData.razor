@@ -34,8 +34,6 @@
 }
 else
 {
-    @*<RadzenUpload Auto="true" Accept="image/*" Url="upload/single" Complete="Complete" Error="Error" Progress="@(args=>OnProgress(args, "upload"))"></RadzenUpload>
-    <RadzenProgressBar Value="progress" Unit="info" Visible="@(progress>0)"></RadzenProgressBar>*@
      <RadzenDataGrid @ref=ordersGrid AllowFiltering="true" AllowRowSelectOnRowClick="true" AllowColumnResize="true" AllowColumnPicking="true"
                 AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true"
                 PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@selectedEntity
@@ -62,40 +60,6 @@ else
                                     <RadzenImage class="img-fluid" Path="@property.GetValue(entity).ToString()"></RadzenImage>
                                 </div>
                             </RadzenCard>
-
-                           @* @switch (entity.Id)
-                            {
-                                case 1:
-                                    <RadzenImage class="img-fluid" Path="https://yaskravaklumba.com.ua/image/cache/catalog/mnogoletniki/geyhera/cherry-cola-1-500x500.jpg"></RadzenImage>
-                                    break;
-                                case 2:
-                                    <RadzenImage class="img-fluid" Path="https://florium.ua/media/catalog/product/cache/2/file/9df78eab33525d08d6e5fb8d27136e95/h/e/heuchera_delta_dawn_5b_1.jpg"></RadzenImage>
-                                    break;
-                                case 3:
-                                    <RadzenImage class="img-fluid" Path="https://img3.procvetok.com/crop/w415h415/de/1d/de1dd6218d03d6338be71b8b5b75043c.jpg"></RadzenImage>
-                                    break;
-                                case 4:
-                                    <RadzenImage class="img-fluid" Path="http://www.heuchera.com.ua/images/info/272/Frost1111.jpg"></RadzenImage>
-                                    break;
-                                case 5:
-                                    <RadzenImage class="img-fluid" Path="https://plantmania.ru/components/com_virtuemart/shop_image/product/2.jpg5ec145868d1f3.jpg"></RadzenImage>
-                                    break;
-                                case 6:
-                                    <RadzenImage class="img-fluid" Path="https://florium.ua/media/catalog/product/cache/1/file/9df78eab33525d08d6e5fb8d27136e95/h/e/heuchera-silver-scrolls.jpg"></RadzenImage>
-                                    break;
-                                case 7:
-                                    <RadzenImage class="img-fluid" Path="https://florium.ua/media/catalog/product/cache/2/file/9df78eab33525d08d6e5fb8d27136e95/6/9/6909837359_6d4666a731_z_5.jpg"></RadzenImage>
-                                    break;
-                                case 8:
-                                    <RadzenImage class="img-fluid" Path="https://www.americanmeadows.com/media/catalog/product/h/e/heuchera_berry_smoothie_coral_bells.jpg?quality=80&bg-color=255,255,255&fit=bounds&height=&width="></RadzenImage>
-                                    break;
-                                case 9:
-                                    <RadzenImage class="img-fluid" Path="https://fabrikacvetov.ru/uploads/product/200/277/geyhera-Electra_1_2021-01-29_20-15-06.jpg"></RadzenImage>
-                                    break;
-                                case 10:
-                                    <RadzenImage class="img-fluid" Path="https://baumschule-nielsen.de/wp-content/uploads/2010/01/fire-chief.jpg"></RadzenImage>
-                                    break;
-                            }*@
 
                         }
                         else if (property.PropertyType.Name.Contains("Collection"))
