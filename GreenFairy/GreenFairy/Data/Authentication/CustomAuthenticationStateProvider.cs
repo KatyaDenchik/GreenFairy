@@ -9,7 +9,6 @@ namespace GreenFairy.Data.Authentication
     {
         private readonly ProtectedSessionStorage protectedSessionStorage;
         private ClaimsPrincipal anonymous = new ClaimsPrincipal(new ClaimsIdentity());
-
         public CustomAuthenticationStateProvider(ProtectedSessionStorage protectedSessionStorage)
         {
             this.protectedSessionStorage = protectedSessionStorage;

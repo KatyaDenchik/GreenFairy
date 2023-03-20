@@ -5,7 +5,7 @@ namespace GreenFairy.Data.Authentication
 {
     public class UserAccountService
     {
-        public static UserAccount CurrentUser = new UserAccount { Name = "TEST", , Role = "Anon" };
+        public static AnonUserAccaunt CurrentUser = new AnonUserAccaunt { Name = "TEST", Role = "Anon" };
         private List<UserAccount> users = new List<UserAccount>();
         public UserAccountService(Repository repository)
         {

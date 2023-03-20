@@ -10,24 +10,12 @@
 <h3>@User?.Role</h3>
 
 @code {
-    public List<PlantEntity> plants = new List<PlantEntity>();
-    public PlantEntity Plant { get; set; }
-    [CascadingParameter]
-    private Task<AuthenticationState>? authenticationState { get; set; }
-    public UserAccount User;
-    public AnonUserAccaunt userAccaunt;
+    public List<PlantEntity> Plants => User.Plants;
 
+    public AnonUserAccaunt User = UserAccountService.CurrentUser;
 
     protected override async Task OnInitializedAsync()
     {
-        var customProvider = provider as CustomAuthenticationStateProvider;
-        authenticationState = customProvider.GetAuthenticationStateAsync();
-        if (authenticationState is not null)
-        {
-            var authState = await authenticationState;
-
-            User = service.GetUserByName(authState.User.Identity.Name);
-        }
         await base.OnInitializedAsync();
     }
 
