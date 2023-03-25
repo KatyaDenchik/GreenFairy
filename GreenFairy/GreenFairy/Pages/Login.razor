@@ -2,7 +2,7 @@
 @using GreenFairy.Data.Authentication
 @inject UserAccountService service
 @inject IJSRuntime js
-@inject CustomAuthenticationStateProvider provider
+@inject AuthenticationStateProvider provider
 @inject NavigationManager navManager
 
 <div class="row">
@@ -29,6 +29,12 @@
 	{
 		public string UserName { get; set; }
 		public string Password { get; set; }
+	}
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		await base.OnInitializedAsync();
 	}
 
 	private Model model = new Model();

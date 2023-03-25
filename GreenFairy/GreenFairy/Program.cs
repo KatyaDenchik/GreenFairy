@@ -10,6 +10,10 @@ using Radzen;
 //UploadController
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
+builder.Services.AddServerSideBlazor().AddHubOptions(o =>
+{
+	o.MaximumReceiveMessageSize = 10 * 1024 * 1024;
+});
 builder.Services.AddAuthenticationCore();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
@@ -21,10 +25,6 @@ builder.Services.AddSingleton<DataBaseView>();
 builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddSingleton<EntityService>();
-builder.Services.AddServerSideBlazor().AddHubOptions(o =>
-{
-    o.MaximumReceiveMessageSize = 10 * 1024 * 1024;
-});
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.

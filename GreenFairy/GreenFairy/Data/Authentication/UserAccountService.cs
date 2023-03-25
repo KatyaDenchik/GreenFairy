@@ -13,7 +13,7 @@ namespace GreenFairy.Data.Authentication
             users.AddRange(admins.Select(admin => new UserAccount { Name = admin.Email, Password = admin.Password, Role = "Admin" }));
 
             var clients = repository.Get<ClientEntity>();
-            users.AddRange(clients.Select(client => new UserAccount { Name = client.Name, Password = client.Password, Role = "Client" }));
+            users.AddRange(clients.Select(client => new UserAccount { Name = client.Email, Password = client.Password, Role = "Client" }));
 
             users.Add(new UserAccount { Name = "BigAdmin", Password = "Admin", Role = "Admin" });
         }
