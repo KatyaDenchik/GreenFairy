@@ -1,15 +1,58 @@
 ﻿@page "/Basket"
 @using GreenFairy.Data.Authentication;
 @using GreenFairy.DomainLayer.DataBase.Entities
+@using GreenFairy.DomainLayer.DataBase.Entities.Abstract;
+@using GreenFairy.ViewModels;
+@inject DataBaseView dataBaseView;
 
 @inject UserAccountService service
 @inject AuthenticationStateProvider provider
-<h3>Basket</h3>
-<h3>@User?.Name</h3>
 
-<h3>@User?.Role</h3>
+@if (Plants.Count == 0)
+{
+    <div style="text-align:center;">
+
+        <h3>Ваш кошик пустий</h3>
+        <h3>Пропонуємо перейти до вибору товарів</h3>
+        @* <div class="col-md-12 text-end">
+    <RadzenButton Navigate="MainPage" ; Variant="Variant.Flat" Text="Додати до кошику" Style="width: 120px" />
+    </div>*@
+        <a href="/">Перейти до товарів</a>
+
+    </div>
+}
+else
+{
+    <RadzenDataGrid  Data="@Plants" Count="@Plants.Count" TItem="PlantEntity">
+        <Columns>
+                <RadzenDataGridColumn TItem="PlantEntity" Width="80px" TextAlign="TextAlign.Center">
+                    <Template Context="plant">
+                        <div class="rz-p-12 rz-text-align-center">
+                            <RadzenImage Path="@plant.Photo.ToString()" Style="width: 150px; height: 150px;" />
+                            <RadzenLabel>@plant.Name</RadzenLabel>
+                            <RadzenNumeric TValue="int" @bind-Value="@plant.Amount" Min="1" Max="@plant.Amount" Default="1" />
+                            <RadzenLabel>@plant.Price</RadzenLabel>
+                        </div>
+                        <div> <RadzenLabel></RadzenLabel></div>
+                    </Template>
+                </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+    //ToDo прикрутить валидатор максимального количества plant
+    //много кликов - одно растение
+    
+}
+
+<ul>
+    @foreach (PlantEntity plant in Plants)
+    {
+        <li>@plant.ToString()</li>
+    }
+</ul>
 
 @code {
+    
+
     public List<PlantEntity> Plants => User.Plants;
 
     public AnonUserAccaunt User = UserAccountService.CurrentUser;
@@ -18,6 +61,9 @@
     {
         await base.OnInitializedAsync();
     }
+    int selectedNumber = 1;
+
+
 
 
 }

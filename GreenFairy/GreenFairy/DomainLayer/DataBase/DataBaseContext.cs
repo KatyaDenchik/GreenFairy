@@ -40,8 +40,8 @@ namespace GreenFairy.DomainLayer.DataBase
         /// </summary>
         /// <param name="options"></param>
         protected override void OnConfiguring(DbContextOptionsBuilder options)=>
-            options.UseLazyLoadingProxies(). // подключение ленивой загрузки привязаных данных (при запросе сущности будут вытащены все связанные с ней сущности)
-            UseSqlite($"Data Source={standartPath}"); 
+            options.UseLazyLoadingProxies().// подключение ленивой загрузки привязаных данных (при запросе сущности будут вытащены все связанные с ней сущности
+			UseSqlite($"Data Source={standartPath}"); 
         
     }
 }

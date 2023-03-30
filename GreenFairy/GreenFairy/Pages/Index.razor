@@ -22,8 +22,8 @@
                            Style="width: 5%; margin: 1rem;">
     </RadzenImage>
 </h1>
-<RadzenDialog/>
-<RadzenCard class="rz-mt-4" >
+<RadzenDialog />
+<RadzenCard class="rz-mt-4">
     <RadzenDataList PageSize="@size" WrapItems="true" AllowPaging="true"
                     Data="@plants" TItem="PlantEntity">
         <Template Context="plant">
@@ -48,24 +48,29 @@
                             <div class="rz-p-12 rz-text-align-center " style="margin: 10px">
                                 <a class="link-info" onclick="@(()=>{OpenPlant(plant);})">Опис рослини </a>
                             </div>
+                            @if (plant.Amount > 0)
+                        {
                             <div class="rz-p-12 rz-text-align-center " style="margin: 10px">
-                        
-
+                                <RadzenButton Click="@(()=>{AddToList(plant);})">Додати до кошику</RadzenButton>
                             </div>
-                           
-
-
-
-                        </RadzenStack>
+                        }
+                        @if (plant.Amount == 0)
+                        {
+                            <div class="rz-p-12 rz-text-align-center " style="margin: 10px">
+                                <RadzenButton Disabled="true" Click="@(()=>{AddToList(plant);})">Немає в наявності</RadzenButton>
+                            </div>
+                        }
 
                     </RadzenStack>
-                </RadzenCard>
-            </Template>
-        </RadzenDataList>
-    </RadzenCard>
+
+                </RadzenStack>
+            </RadzenCard>
+        </Template>
+    </RadzenDataList>
+</RadzenCard>
 
 
-    @code {
+@code {
     bool allowVirtualization;
 
     IEnumerable<PlantEntity> plants;
@@ -101,7 +106,12 @@
         Task.Delay(200).Wait();
         await DialogService.OpenAsync<PlantDescription>($"{plant.Name}",
         new Dictionary<string, object>() { { "Plant", plant } },
-             options: new DialogOptions() { Width = "700px", Height = "512px", Resizable = true, Draggable = true, CloseDialogOnEsc = true });
+             options: new DialogOptions() { Width = "700px", Height = "512px", ShowClose = false, ShowTitle = false, Resizable = true, Draggable = true, CloseDialogOnEsc = true });
+    }
+
+    public async Task AddToList(PlantEntity plant)
+    {
+        UserAccountService.CurrentUser.Plants.Add(plant);
     }
 }
 

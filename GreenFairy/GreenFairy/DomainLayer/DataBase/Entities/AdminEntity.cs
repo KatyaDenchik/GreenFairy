@@ -10,7 +10,11 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         }
         public override void Delete(Repository repository)
         {
-            repository.Delete(this);
+            var itself = repository.Get<AdminEntity>(s => s.Id == this.Id);
+            if (itself != null)
+            {
+                repository.Delete(itself);
+            }
         }
     }
 }

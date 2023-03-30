@@ -21,7 +21,11 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         // Каждая сущность сама себя удаляет или сохраняет, ибо в админской часте не ясно какой тип сущности
         public void Delete(Repository repository)
         {
-            repository.Delete(this);
+            var itself = repository.Get<PlantEntity>(s => s.Id == this.Id);
+            if (itself != null)
+            {
+                repository.Delete(itself);
+            }
         }
 
         public void SaveToDB(Repository repository)

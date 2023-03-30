@@ -11,7 +11,11 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         public virtual ICollection<OrderEntity> Orders { get; set; }
         public override void Delete(Repository repository)
         {
-            repository.Delete(this);
+            var itself = repository.Get<ClientEntity>(s=>s.Id == this.Id);
+            if (itself != null)
+            {
+                repository.Delete(itself);
+            }
         }
 
         public override void SaveToDB(Repository repository)

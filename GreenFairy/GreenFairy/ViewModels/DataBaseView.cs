@@ -124,8 +124,8 @@ namespace GreenFairy.ViewModels
         {
             foreach (var entity in entities)
             {
-                entity.Delete(repository);
                 Entities.Remove(entity);
+                entity.Delete(repository);
             }
         }
 

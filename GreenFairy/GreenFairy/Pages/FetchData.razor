@@ -34,7 +34,7 @@
 }
 else
 {
-     <RadzenDataGrid @ref=ordersGrid AllowFiltering="true" AllowRowSelectOnRowClick="true" AllowColumnResize="true" AllowColumnPicking="true"
+    <RadzenDataGrid @ref=ordersGrid AllowFiltering="true" AllowRowSelectOnRowClick="true" AllowColumnResize="true" AllowColumnPicking="true"
                 AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true"
                 PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@selectedEntity
                 Data="@entities" Count="@dataBaseView.Entities.Count" TItem="IEntity">
@@ -42,7 +42,7 @@ else
 
             @foreach (var property in dataBaseView.Type.GetProperties())
             {
-                <RadzenDataGridColumn TItem="IEntity" Title="@property.Name" Sortable="true" Filterable="true" Property="@property.Name" Width="80px" TextAlign="TextAlign.Center" >
+                <RadzenDataGridColumn TItem="IEntity" Title="@property.Name" Sortable="true" Filterable="true" Property="@property.Name" Width="80px" TextAlign="TextAlign.Center">
                     <Template Context="entity">
 
                         @if (property.Name == "Id")
@@ -53,9 +53,9 @@ else
                         {
                             <RadzenCard>
                                 <div>
-                                <RadzenFileInput @bind-FileName=@fileName @bind-FileSize=@fileSize TValue="string" class="w-100"
-                                     ValueChanged=@(newValue=>{dataBaseView.Change(entity, property, newValue);}) Error=@(args => OnError(args, "FileInput")) />
-                                </div> 
+                                    <RadzenFileInput @bind-FileName=@fileName @bind-FileSize=@fileSize TValue="string" class="w-100"
+                                         ValueChanged=@(newValue=>{dataBaseView.Change(entity, property, newValue);}) Error=@(args => OnError(args, "FileInput")) />
+                                </div>
                                 <div>
                                     <RadzenImage class="img-fluid" Path="@property.GetValue(entity).ToString()"></RadzenImage>
                                 </div>
@@ -81,11 +81,11 @@ else
 
 
 
-<RadzenButton Click="dataBaseView.Save">Зберегти</RadzenButton>
+<RadzenButton Click="()=>{dataBaseView.Save(); Reload();}">Зберегти</RadzenButton>
 
-<RadzenButton Click="()=>{dataBaseView.Add();  ordersGrid.Reload();}">Додати</RadzenButton>
+<RadzenButton Click="()=>{dataBaseView.Add();  Reload(); }">Додати</RadzenButton>
 
-<RadzenButton Click="()=>{dataBaseView.Delete(selectedEntity); ordersGrid.Reload();}">Видалити</RadzenButton>
+<RadzenButton Click="()=>{dataBaseView.Delete(selectedEntity); Reload();}">Видалити</RadzenButton>
 
 @code {
     RadzenDataGrid<IEntity>? ordersGrid;
@@ -102,9 +102,15 @@ else
         progress = args.Progress;
     }
 
+    private async void Reload()
+    {
+        entities = await Task.Run(() => dataBaseView.Entities);
+        await ordersGrid.Reload();
+    }
+
     void OnChange(string value, string name)
     {
-        
+
     }
     void OnError(UploadErrorEventArgs args, string name)
     {

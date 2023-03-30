@@ -18,7 +18,11 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
 
         public void Delete(Repository repository)
         {
-            repository.Delete(this);
+            var itself = repository.Get<OrderEntity>(s => s.Id == this.Id);
+            if (itself != null)
+            {
+                repository.Delete(itself);
+            }
         }
 
         public void SaveToDB(Repository repository)
