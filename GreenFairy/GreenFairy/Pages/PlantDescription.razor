@@ -9,7 +9,9 @@
 <div style="display: grid;
   grid-template-columns: 630px auto;">
     <div><h1>@Plant.Name</h1></div>
-    <div style="align-content:flex-end "><RadzenButton Click="@((args) => dialogService.Close(true))" Variant="Variant.Flat" ButtonStyle="ButtonStyle.Light" Text="X" Style="width: 20px; margin:-10px" class="me-1" /></div>
+    <div>
+    <RadzenButton Click="@((args) => dialogService.Close(true))" Variant="Variant.Flat" ButtonStyle="ButtonStyle.Light" Text="🗙" class="dismiss" />
+    </div>
 </div>
 
 <div class="row">
