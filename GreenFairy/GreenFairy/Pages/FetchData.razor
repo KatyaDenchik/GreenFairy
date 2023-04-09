@@ -54,7 +54,7 @@ else
                             <RadzenCard>
                                 <div>
                                     <RadzenFileInput @bind-FileName=@fileName @bind-FileSize=@fileSize TValue="string" class="w-100"
-                                         ValueChanged=@(newValue=>{dataBaseView.Change(entity, property, newValue);}) Error=@(args => OnError(args, "FileInput")) />
+                                         ValueChanged=@(newValue=>{dataBaseView.Change(entity, property, newValue);}) />
                                 </div>
                                 <div>
                                     <RadzenImage class="img-fluid" Path="@property.GetValue(entity).ToString()"></RadzenImage>
@@ -108,13 +108,6 @@ else
         await ordersGrid.Reload();
     }
 
-    void OnChange(string value, string name)
-    {
-
-    }
-    void OnError(UploadErrorEventArgs args, string name)
-    {
-    }
     string fileName;
     long? fileSize;
 
@@ -124,7 +117,7 @@ else
         {
             entities = null;
             entities = await Task.Run(() => dataBaseView.Entities);
-            this.StateHasChanged();
+            await this.InvokeAsync(StateHasChanged);
         };
         entities = await Task.Run(() => dataBaseView.Entities);
     }

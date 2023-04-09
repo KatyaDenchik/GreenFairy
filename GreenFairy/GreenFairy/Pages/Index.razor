@@ -1,11 +1,11 @@
 ﻿@page "/"
 @inject IJSRuntime js
 @inject EntityService entityService
-@inject Repository repo
 @inject DataBaseView dataBaseView
-@inject DialogService DialogService
+@inject DialogService dialogService
 @inject UserAccountService service
 @inject AuthenticationStateProvider provider
+@inject Repository repo
 
 <PageTitle>Green Фея</PageTitle>
 @using GreenFairy.Data
@@ -22,7 +22,6 @@
                            Style="width: 5%; margin: 1rem;">
     </RadzenImage>
 </h1>
-<RadzenDialog />
 <RadzenCard class="rz-mt-4">
     <RadzenDataList PageSize="@size" WrapItems="true" AllowPaging="true"
                     Data="@plants" TItem="PlantEntity">
@@ -51,13 +50,13 @@
                             @if (plant.Amount > 0)
                         {
                             <div class="rz-p-12 rz-text-align-center " style="margin: 10px">
-                                <RadzenButton Click="@(()=>{AddToList(plant);})">Додати до кошику</RadzenButton>
+                                <RadzenButton Click="@(()=>{AddToOrder(plant);})">Додати до кошику</RadzenButton>
                             </div>
                         }
                         @if (plant.Amount == 0)
                         {
                             <div class="rz-p-12 rz-text-align-center " style="margin: 10px">
-                                <RadzenButton Disabled="true" Click="@(()=>{AddToList(plant);})">Немає в наявності</RadzenButton>
+                                <RadzenButton Disabled="true" Click="@(()=>{AddToOrder(plant);})">Немає в наявності</RadzenButton>
                             </div>
                         }
 
@@ -103,15 +102,14 @@
 
     public async Task OpenPlant(PlantEntity plant)
     {
-        Task.Delay(200).Wait();
-        await DialogService.OpenAsync<PlantDescription>($"{plant.Name}",
+        await dialogService.OpenAsync<PlantDescription>($"{plant.Name}",
         new Dictionary<string, object>() { { "Plant", plant } },
              options: new DialogOptions() { Width = "700px", Height = "512px", ShowClose = false, ShowTitle = false, Resizable = true, Draggable = true, CloseDialogOnEsc = true });
     }
 
-    public async Task AddToList(PlantEntity plant)
+    public void AddToOrder(PlantEntity plant)
     {
-        UserAccountService.CurrentUser.Plants.Add(plant);
+        UserAccountService.CurrentUser.AddPlant(plant);
     }
 }
 

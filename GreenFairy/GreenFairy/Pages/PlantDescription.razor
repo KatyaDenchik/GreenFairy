@@ -9,7 +9,7 @@
 <div style="display: grid;
   grid-template-columns: 630px auto;">
     <div><h1>@Plant.Name</h1></div>
-    <div>
+    <div >
     <RadzenButton Click="@((args) => dialogService.Close(true))" Variant="Variant.Flat" ButtonStyle="ButtonStyle.Light" Text="🗙" class="dismiss" />
     </div>
 </div>
@@ -25,13 +25,13 @@
     @if (Plant.Amount == 0)
     {
         <div class="col-md-12 text-end">
-            <RadzenButton Disabled="true" Click="@(()=>{AddToList(Plant);})" Variant="Variant.Flat" Text="Немає в наявності" Style="width: 120px" />
+            <RadzenButton Disabled="true" Click="@(()=>{AddToOrder(Plant);})" Variant="Variant.Flat" Text="Немає в наявності" Style="width: 120px" />
         </div>
     }
     @if (Plant.Amount > 0)
     {
     <div class="col-md-12 text-end">
-            <RadzenButton Click="@(()=>{AddToList(Plant);})" Variant="Variant.Flat" Text="Додати до кошику" Style="width: 120px" />
+            <RadzenButton Click="@(()=>{AddToOrder(Plant);})" Variant="Variant.Flat" Text="Додати до кошику" Style="width: 120px" />
     </div>
     }
 </div>
@@ -45,9 +45,9 @@
 
 
     }
-    public async Task AddToList(PlantEntity Plant)
+    public async Task AddToOrder(PlantEntity Plant)
     {
-        UserAccountService.CurrentUser.Plants.Add(Plant);
+        UserAccountService.CurrentUser.AddPlant(Plant);
     }
 
 }

@@ -1,7 +1,9 @@
 ﻿@using GreenFairy.Data.Authentication
+@using GreenFairy.Pages;
 @inject IJSRuntime js
 @inherits LayoutComponentBase
 @inject AuthenticationStateProvider provider
+@inject DialogService dialogService
 @inject NavigationManager navManager
 
 <PageTitle>GreenFairy</PageTitle>
@@ -11,18 +13,19 @@
         <NavMenu />
     </div>
 
+    <RadzenDialog />
     <main>
         <div class="top-row px-4">
-            <a href="/Basket">Basket</a>
+            <RadzenButton Click="OpenBasket">Кошик</RadzenButton>
             <a href="/Про нас">Про нас</a>
             <a href="/Оплата та доставка">Оплата та доставка</a>
 
             <AuthorizeView>
                 <Authorized>
-                    <a @onclick="Logout" href ="javascript:void(0)">Logout</a>
+                    <a @onclick="Logout" href="javascript:void(0)">Logout</a>
                 </Authorized>
                 <NotAuthorized>
-                    <a href ="/login">Login</a>
+                    <a href="/login">Login</a>
                 </NotAuthorized>
             </AuthorizeView>
         </div>
@@ -33,12 +36,28 @@
     </main>
 </div>
 
-@code{
+@code {
     private async Task Logout()
     {
         var customProvider = (CustomAuthenticationStateProvider)provider;
         await customProvider.UpdateAuthenticationState(null);
 
         navManager.NavigateTo("/", true);
+    }
+
+    public async void OpenBasket()
+    {
+        await dialogService.OpenAsync<Basket>($"Кошик",
+             options: new DialogOptions()
+                 {
+                     Width = "1024px",
+                     Height = "512px",
+                     ShowClose = false,
+                     ShowTitle = false,
+                     Resizable = true,
+                     Draggable = true,
+                     CloseDialogOnOverlayClick = true,
+                     CloseDialogOnEsc = true
+                 });
     }
 }
