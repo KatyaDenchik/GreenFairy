@@ -1,6 +1,8 @@
 ﻿@using GreenFairy.Data.Authentication
 @using GreenFairy.Pages;
+
 @inject IJSRuntime js
+@inject NavigationManager NavigationManager
 @inherits LayoutComponentBase
 @inject AuthenticationStateProvider provider
 @inject DialogService dialogService
@@ -16,16 +18,17 @@
     <RadzenDialog />
     <main>
         <div class="top-row px-4">
-            <RadzenButton Click="OpenBasket">Кошик</RadzenButton>
-            <a href="/Про нас">Про нас</a>
-            <a href="/Оплата та доставка">Оплата та доставка</a>
+            <RadzenButton Style="margin: 5px; background-color: #8FBC8F;" Click="OpenBasket">Кошик</RadzenButton>
+            <RadzenButton Style="margin: 5px; background-color: #8FBC8F;" Click="@(e => OpenAboutUs())">Про нас</RadzenButton>
+            <RadzenButton Style="margin: 5px; background-color: #8FBC8F;" Click="@(e => OpenPaymentAndDelivery())">Оплата та доставка</RadzenButton>
 
             <AuthorizeView>
                 <Authorized>
-                    <a @onclick="Logout" href="javascript:void(0)">Logout</a>
+                    <RadzenButton Style="margin: 5px; background-color: #006400;" Click="@(e => Logout())">Вийти</RadzenButton>
+
                 </Authorized>
                 <NotAuthorized>
-                    <a href="/login">Login</a>
+                    <RadzenButton Style="margin: 5px; background-color: #006400;" Click="@(e => Login())">Авторизуватися</RadzenButton>
                 </NotAuthorized>
             </AuthorizeView>
         </div>
@@ -60,4 +63,18 @@
                      CloseDialogOnEsc = true
                  });
     }
+
+    public async void OpenAboutUs()
+    {
+        NavigationManager.NavigateTo("/Про нас");
+    }
+    public async void OpenPaymentAndDelivery()
+    {
+        NavigationManager.NavigateTo("/Оплата та доставка");
+    }
+    public async void Login()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+
 }

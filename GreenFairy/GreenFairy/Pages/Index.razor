@@ -50,13 +50,13 @@
                             @if (plant.Amount > 0)
                         {
                             <div class="rz-p-12 rz-text-align-center " style="margin: 10px">
-                                <RadzenButton Click="@(()=>{AddToOrder(plant);})">Додати до кошику</RadzenButton>
+                                <RadzenButton Style="background-color: #006400;" Click="@(()=>{AddToOrder(plant);})">Додати до кошику</RadzenButton>
                             </div>
                         }
                         @if (plant.Amount == 0)
                         {
                             <div class="rz-p-12 rz-text-align-center " style="margin: 10px">
-                                <RadzenButton Disabled="true" Click="@(()=>{AddToOrder(plant);})">Немає в наявності</RadzenButton>
+                                <RadzenButton Style="background-color: #006400;" Disabled="true" Click="@(()=>{AddToOrder(plant);})">Немає в наявності</RadzenButton>
                             </div>
                         }
 
