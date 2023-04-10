@@ -1,10 +1,13 @@
 ﻿@page "/registration"
 @using GreenFairy.Data.Authentication
 @using GreenFairy.DomainLayer.DataBase.Entities;
+@using GreenFairy.DomainLayer.DataBase;
+
 @inject UserAccountService service
 @inject IJSRuntime js
 @inject AuthenticationStateProvider provider
 @inject NavigationManager navManager
+@inject Repository repo
 
 
 <RadzenStack Gap="0" Class="rz-my-12 rz-mx-auto rz-border-radius-6 rz-shadow-10" Style="width: 100%; max-width: 800px; overflow: hidden;">
@@ -20,82 +23,111 @@
             Регістрація
         </RadzenText>
 
-        <RadzenStack Class="rz-my-12 rz-mx-auto rz-border-radius-3 rz-shadow-5" AlignItems="AlignItems.Start">
-            <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6">
+        <RadzenStack Class="rz-my-12 rz-mx-auto rz-border-radius-3 rz-shadow-5" Style="margin: 2em; padding: 1em" AlignItems="AlignItems.Start">
+
+            <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
                 Імя:
             </RadzenText>
-            <RadzenTextBox Value="@userEntity.Name" />
-        </RadzenStack>
+            <RadzenTextBox @bind-Value="@model.Name" />
 
-        <RadzenStack Class="rz-my-12 rz-mx-auto rz-border-radius-3 rz-shadow-5" AlignItems="AlignItems.Start">
-            <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6">
+            <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
                 Прізвище:
             </RadzenText>
-            <RadzenTextBox Value="@userEntity.Name" />
+            <RadzenTextBox @bind-Value="@model.Surname" />
+
+            <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
+                Адреса:
+            </RadzenText>
+            <RadzenTextBox @bind-Value="@model.Address" />
+             
+            <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
+                Контактний номер:
+            </RadzenText>
+            <RadzenTextBox @bind-Value="@model.Phone" />
+
+            <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
+                Електрона пошта:
+            </RadzenText>
+            <RadzenTextBox @bind-Value="@model.Email" />
+
+            <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
+                Пароль:
+            </RadzenText>
+            <RadzenPassword @bind-Value="@model.Password" />
+
+            <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em;">
+                Повторіть пароль:
+            </RadzenText>
+            <RadzenPassword @bind-Value="@model.RepitePassword" />
+
+            <RadzenStack Orientation="Orientation.Horizontal">
+                <RadzenButton Style="margin-top: 2em; margin-right: 2em; padding: 1em" Text="Зареєструватись" Click="@Register" />
+                <RadzenButton Style="margin-top: 2em; margin-left: 2em; padding: 1em" Text="Відміна" Click="@Cancel" />
+            </RadzenStack>
         </RadzenStack>
-
-        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
-            Адреса:
-        </RadzenText>
-        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
-            Контактний номер:
-        </RadzenText>
-        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
-            Електрона пошта:
-        </RadzenText>
-        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
-            Пароль:
-        </RadzenText>
-        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
-            Повторіть пароль:
-        </RadzenText>
-
-        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
-            Імя:
-        </RadzenText>
-
-        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
-            Прізвище:
-        </RadzenText><RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
-            Адреса:
-        </RadzenText>
-        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
-            Контактний номер:
-        </RadzenText>
-        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
-            Електрона пошта:
-        </RadzenText>
-        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
-            Пароль:
-        </RadzenText>
-        <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2" Class="rz-mb-6">
-            Повторіть пароль:
-        </RadzenText>
-
     </RadzenCard>
 </RadzenStack>
 
 @code {
-    private ClientEntity userEntity = new();
+
+    private class RegistrationModel
+    {
+        public ClientEntity UserEntity = new();
+
+        public string Email { get => UserEntity.Email; set => UserEntity.Email = ValidateEmail(value); }
+
+        public string Password { get => UserEntity.Password; set => UserEntity.Password = ValidatePassword(value); }
+
+        private string repitePassword;
+        public string RepitePassword { get => repitePassword; set => repitePassword = ValidatePassword(value); }
+
+        public string Name { get => UserEntity.Name; set => UserEntity.Name = value; }
+
+        public string Surname { get => UserEntity.Surname; set => UserEntity.Surname = value; }
+
+        public string Address { get => UserEntity.Address; set => UserEntity.Address = value; }
+
+        public string Phone { get => UserEntity.Phone.ToString(); set => UserEntity.Phone = ValidatePhone(value); }
+
+        private string ValidateEmail(string email)
+        {
+            return email;
+        }
+
+        private int ValidatePhone(string phone)
+        {
+            return int.Parse(phone);
+        }
+
+        private string ValidatePassword(string password)
+        {
+            return password;
+        }
+    }
+
+    private RegistrationModel model = new();
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
     }
 
-    private async Task Authenticate(LoginArgs a)
+    private void Cancel()
     {
-        var userAccount = service.GetUserByName(a.Username);
-        if (userAccount is null)
+        navManager.NavigateTo("/login", true);
+    }
+
+    private async void Register()
+    {
+        if (model.RepitePassword != model.Password)
         {
-            await js.InvokeVoidAsync("alert", "Такого користувача не існує!");
+            await js.InvokeVoidAsync("alert", "Пароль не відповідає повторно введеному!");
             return;
         }
 
-        if (userAccount.Password != a.Password)
-        {
-            await js.InvokeVoidAsync("alert", "Ви ввели невірний пароль, спробуйте ще раз.");
-            return;
-        }
+        model.UserEntity.SaveToDB(repo);
+
+        var userAccount = service.GetUserByName(model.Email);
 
         var customProvider = provider as CustomAuthenticationStateProvider;
         await customProvider.UpdateAuthenticationState(new UserSession
@@ -104,10 +136,5 @@
                 Role = userAccount.Role
             });
         navManager.NavigateTo("/", true);
-    }
-
-    void OnRegister(object name)
-    {
-        Console.WriteLine($"{name} -> Register");
     }
 }
