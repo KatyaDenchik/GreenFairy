@@ -27,30 +27,24 @@
                     Data="@plants" TItem="PlantEntity">
         <Template Context="plant">
             <RadzenCard Style="width: 250px">
-                    <RadzenStack>
                 <RadzenText TextStyle="TextStyle.Caption" Class="rz-mb-0">@(plant.Group)</RadzenText>
                     <RadzenBadge BadgeStyle="BadgeStyle.Success" Text=@($"{String.Format(new System.Globalization.CultureInfo("uk-UA"), "{0:C}", plant.Price)}") />
 
                     <hr style="border: none; background-color: var(--rz-white); height: 1px; margin: 1rem 0;" />
-                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem">
-                        <RadzenImage Click="@(()=>{OpenPlant(plant);})" Path="@plant.Photo.ToString()" Style="width: 250px; height: 250px;" />
-                        <hr style="border: none; background-color: var(--rz-white); height: 1px; margin: 1rem 0;" />
-                        <RadzenStack Gap="0">
-
-                            <RadzenText TextStyle="TextStyle.H6" Class="rz-mb-0">@(plant.Name)</RadzenText>
-                            <a class="link-info" onclick="@(()=>{OpenPlant(plant);})">Опис рослини </a>
-                            @if (plant.Amount > 0)
-                        {
-                            <RadzenButton Click="@(()=>{AddToOrder(plant);})">Додати до кошику</RadzenButton>
-                        }
-                        @if (plant.Amount == 0)
-                        {
-                            <RadzenButton Disabled="true" Click="@(()=>{AddToOrder(plant);})">Немає в наявності</RadzenButton>
-                        }
-                    </RadzenStack>
-
-                        </RadzenStack>
-                    </RadzenStack>
+                    <RadzenImage Click="@(()=>{OpenPlant(plant);})" Path="@plant.Photo.ToString()" Style="width: 250px; height: 250px;" />
+                    <hr style="border: none; background-color: var(--rz-white); height: 1px; margin: 1rem 0;" />
+                    <RadzenStack Gap="1" AlignItems="AlignItems.Center">
+                        <RadzenText TextStyle="TextStyle.H6" Class="rz-mb-0">@(plant.Name)</RadzenText>
+                        <a class="link-info" onclick="@(()=>{OpenPlant(plant);})">Опис рослини </a>
+                        @if (plant.Amount > 0)
+                    {
+                        <RadzenButton Click="@(()=>{AddToOrder(plant);})">Додати до кошику</RadzenButton>
+                    }
+                    @if (plant.Amount == 0)
+                    {
+                        <RadzenButton Disabled="true" Click="@(()=>{AddToOrder(plant);})">Немає в наявності</RadzenButton>
+                    }
+                </RadzenStack>
             </RadzenCard>
         </Template>
     </RadzenDataList>
