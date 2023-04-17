@@ -1,36 +1,83 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using GreenFairy.Data.Helpers;
+@using GreenFairy.Enums;
+<div class="top-row ps-3 navbar navbar-dark" style="background: #73AE84;">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">GreenFairy</a>
+        <a class="navbar-brand" href="">Green Фея</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
     </div>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu" style="background: #93CDA3;">
     <nav class="flex-column">
-         <AuthorizeView Roles="Admin,Client">
-            <Authorized> 
+        <div class="nav-item px-3" style="background: #93CDA3; "><RadzenText style="color: white;" TextStyle="TextStyle.H5" TextAlign="TextAlign.Center">Каталог</RadzenText></div>
+
+        <div class="nav-item px-3" style="background: #93CDA3;">
+            <NavLink style="color: white;" class="nav-link" @onclick="()=>{PlantsSort(PlantsGroup.All);}">Всі рослини</NavLink>
+        </div>
+        <div class="nav-item px-3" style="background: #93CDA3; ">
+            <NavLink style="color: white;" class="nav-link" @onclick="()=>{PlantsSort(PlantsGroup.Geyhery);}">Гейхери</NavLink>
+        </div>
+        <div class="nav-item px-3" style="background: #93CDA3; ">
+            <NavLink style="color: white;" class="nav-link" @onclick="()=>{PlantsSort(PlantsGroup.Coniferous);}">Хвойні</NavLink>
+        </div>
+        <div class="nav-item px-3" style="background: #93CDA3; ">
+            <NavLink style="color: white;" class="nav-link" @onclick="()=>{PlantsSort(PlantsGroup.Sedums);}">Седуми</NavLink>
+        </div>
+
+
+
+        <AuthorizeView Roles="Admin,Client">
+            <Authorized>
                 <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
+                  
+                </div>
             </Authorized>
         </AuthorizeView>
+          <NavLink class="nav-link" href="fetchdata" style="color: white;">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Робота з базою даних
+                    </NavLink>
+
        
-                 <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
+
+
+        <div class="nav-item px-3" style="background: #93CDA3;">
+            <NavLink class="nav-link" ></NavLink>
+        </div>
+        <div class="nav-item px-3" style="background: #93CDA3;">
+            <NavLink class="nav-link"></NavLink>
+        </div>
+        <div class="nav-item px-3" style="background: #93CDA3;">
+            <NavLink class="nav-link"></NavLink>
+        </div>
+        <div class="nav-item px-3" style="background: #93CDA3;">
+            <NavLink class="nav-link"></NavLink>
+        </div>
+        <div class="nav-item px-3" style="background: #93CDA3;">
+            <NavLink class="nav-link"></NavLink>
+        </div>
+        <div class="nav-item px-3" style="background: #93CDA3;">
+            <NavLink class="nav-link"></NavLink>
+        </div>
+        <div class="nav-item px-3" style="background: #93CDA3;">
+            <NavLink class="nav-link"></NavLink>
+        </div>
+        <div class="nav-item px-3" style="background: #93CDA3;">
+            <NavLink class="nav-link"></NavLink>
+        </div>
+        <div class="nav-item px-3" style="background: #93CDA3;">
+            <NavLink class="nav-link"></NavLink>
+        </div>
+        <div class="nav-item px-3" style="background: #93CDA3;">
+            <NavLink class="nav-link"></NavLink>
+        </div>
+        <div class="nav-item px-3" style="background: #93CDA3;">
+            <NavLink class="nav-link"></NavLink>
         </div>
     </nav>
 </div>
+
 
 @code {
     private bool collapseNavMenu = true;
@@ -40,5 +87,16 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    public void PlantsSort(PlantsGroup plantsGroup)
+    {
+        switch (plantsGroup)
+        {
+            case PlantsGroup.All: PlantHelper.SortPlants = PlantHelper.Plants; return;
+            case PlantsGroup.Geyhery: PlantHelper.SortPlants = PlantHelper.Plants.Where(p => p.Plant.Group.Equals("Гейхера", StringComparison.InvariantCultureIgnoreCase)).ToList(); return;
+            case PlantsGroup.Coniferous: PlantHelper.SortPlants = PlantHelper.Plants.Where(p => p.Plant.Group.Equals("Хвойні", StringComparison.InvariantCultureIgnoreCase)).ToList(); return;
+            case PlantsGroup.Sedums: PlantHelper.SortPlants = PlantHelper.Plants.Where(p => p.Plant.Group.Equals("Седуми", StringComparison.InvariantCultureIgnoreCase)).ToList(); return;
+        }
     }
 }

@@ -1,0 +1,12 @@
+﻿<div class="@notificationClass" style="display: @notificationDisplay">
+    @notificationMessage
+</div>
+
+@code {
+    [Parameter]
+    public string notificationMessage { get; set; }
+    [Parameter]
+    public string notificationClass { get; set; }
+    [Parameter]
+    public string notificationDisplay { get; set; }
+}

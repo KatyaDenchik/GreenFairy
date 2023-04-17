@@ -2,52 +2,69 @@
 @using GreenFairy.Data.Authentication;
 @using GreenFairy.DomainLayer.DataBase.Entities
 
+@inject IJSRuntime JSRuntime
 @inject Radzen.DialogService dialogService
 @inject UserAccountService service
 @inject AuthenticationStateProvider provider
 
 <div style="display: grid;
   grid-template-columns: 630px auto;">
-    <div><h1>@Plant.Name</h1></div>
+    <div><h1>@Plant.Plant.Name</h1></div>
     <div >
     <RadzenButton Click="@((args) => dialogService.Close(true))" Variant="Variant.Flat" ButtonStyle="ButtonStyle.Light" Text="🗙" class="dismiss" />
     </div>
 </div>
 
 <div class="row">
-    <RadzenText Text="@Plant.Description"></RadzenText>
+    <RadzenText Text="@Plant.Plant.Description"></RadzenText>
 </div>
 <div class="row">
     <div class="col-md-12 text-left">
-        <RadzenBadge BadgeStyle="BadgeStyle.Success" Style="width: 120px " Text=@($"Ціна: {String.Format(new System.Globalization.CultureInfo("uk-UA"), "{0:C}", Plant.Price)}") />
+        <RadzenBadge BadgeStyle="BadgeStyle.Success" Style="width: 120px " Text=@($"Ціна: {String.Format(new System.Globalization.CultureInfo("uk-UA"), "{0:C}", Plant.Plant.Price)}") />
         <RadzenBadge BadgeStyle="BadgeStyle.Success" Style="scrollbar-arrow-color " Text=@($"Кількість рослин в наявності: {Plant.Amount}") />
     </div>
     @if (Plant.Amount == 0)
     {
         <div class="col-md-12 text-end">
-            <RadzenButton Disabled="true" Click="@(()=>{AddToOrder(Plant);})" Variant="Variant.Flat" Text="Немає в наявності" Style="width: 120px" />
+            <RadzenButton Disabled="true" Click="@(()=>{AddToOrder(Plant);})" Variant="Variant.Flat" Text="Немає в наявності" Style="width: 120px; background: rgba(95, 141, 108, 0.44);" />
         </div>
     }
     @if (Plant.Amount > 0)
     {
     <div class="col-md-12 text-end">
-            <RadzenButton Click="@(()=>{AddToOrder(Plant);})" Variant="Variant.Flat" Text="Додати до кошику" Style="width: 120px" />
+            <RadzenButton Click="@(()=>{AddToOrder(Plant);})" Variant="Variant.Flat" Text="Додати до кошику" Style="width: 120px; background: #5F8D6C;" />
     </div>
+        <Notification notificationMessage="@message" notificationClass="@notificationClass" notificationDisplay="@notificationDisplay" />
     }
 </div>
 @code
 {
+    string message;
+    string notificationClass;
+    string notificationDisplay;
     [Parameter]
-    public PlantEntity Plant { get; set; }
+    public OrderedPlantEntity Plant { get; set; }
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
 
     }
-    public async Task AddToOrder(PlantEntity Plant)
+    public async Task AddToOrder(OrderedPlantEntity plant)
     {
-        UserAccountService.CurrentUser.AddPlant(Plant);
+        UserAccountService.CurrentUser.AddPlant(plant);
+        message = $"Рослину {plant.Plant.Name} додано до кошику";
+        notificationClass = "notification";
+        notificationDisplay = "block";
+
+        await Task.Delay(3000);
+        HideNotification();
+    }
+    [JSInvokable]
+    public void HideNotification()
+    {
+        notificationDisplay = "none";
+        StateHasChanged();
     }
 
 }

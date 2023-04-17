@@ -16,7 +16,7 @@ namespace GreenFairy.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "7.0.4")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true);
@@ -45,10 +45,6 @@ namespace GreenFairy.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -80,6 +76,10 @@ namespace GreenFairy.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("AddressOfDelivery")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("ClientId")
                         .HasColumnType("INTEGER");
 
@@ -96,6 +96,9 @@ namespace GreenFairy.Migrations
                     b.Property<int>("PaymentKind")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("PlantEntityId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("PlantsCount")
                         .HasColumnType("INTEGER");
 
@@ -103,16 +106,42 @@ namespace GreenFairy.Migrations
 
                     b.HasIndex("ClientId");
 
+                    b.HasIndex("PlantEntityId");
+
                     b.ToTable("OrderEntities");
                 });
 
-            modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.PlantEntity", b =>
+            modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.OrderedPlantEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Amount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("OrderEntityId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderingKind")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlantId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderEntityId");
+
+                    b.HasIndex("PlantId");
+
+                    b.ToTable("OrderedPlantEntities");
+                });
+
+            modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.PlantEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
@@ -143,21 +172,6 @@ namespace GreenFairy.Migrations
                     b.ToTable("PlantEntities");
                 });
 
-            modelBuilder.Entity("OrderEntityPlantEntity", b =>
-                {
-                    b.Property<int>("OrdersId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("PlantsId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("OrdersId", "PlantsId");
-
-                    b.HasIndex("PlantsId");
-
-                    b.ToTable("OrderEntityPlantEntity");
-                });
-
             modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.OrderEntity", b =>
                 {
                     b.HasOne("GreenFairy.DomainLayer.DataBase.Entities.ClientEntity", "Client")
@@ -166,25 +180,39 @@ namespace GreenFairy.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GreenFairy.DomainLayer.DataBase.Entities.PlantEntity", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("PlantEntityId");
+
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("OrderEntityPlantEntity", b =>
+            modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.OrderedPlantEntity", b =>
                 {
                     b.HasOne("GreenFairy.DomainLayer.DataBase.Entities.OrderEntity", null)
+                        .WithMany("Plants")
+                        .HasForeignKey("OrderEntityId");
+
+                    b.HasOne("GreenFairy.DomainLayer.DataBase.Entities.PlantEntity", "Plant")
                         .WithMany()
-                        .HasForeignKey("OrdersId")
+                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GreenFairy.DomainLayer.DataBase.Entities.PlantEntity", null)
-                        .WithMany()
-                        .HasForeignKey("PlantsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.ClientEntity", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.OrderEntity", b =>
+                {
+                    b.Navigation("Plants");
+                });
+
+            modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.PlantEntity", b =>
                 {
                     b.Navigation("Orders");
                 });

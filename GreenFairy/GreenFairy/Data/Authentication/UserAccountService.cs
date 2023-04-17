@@ -7,7 +7,14 @@ namespace GreenFairy.Data.Authentication
     {
         public static AnonUserAccaunt CurrentUser = new AnonUserAccaunt { Name = "TEST", Role = "Anon" };
         private List<UserAccount> users = new List<UserAccount>();
+        private readonly Repository repository;
+
         public UserAccountService(Repository repository)
+        {
+            this.repository = repository;
+        }
+
+        private void Update()
         {
             var admins = repository.Get<AdminEntity>();
             users.AddRange(admins.Select(admin => new UserAccount { Name = admin.Email, Password = admin.Password, Role = "Admin" }));
@@ -20,6 +27,8 @@ namespace GreenFairy.Data.Authentication
 
         public UserAccount? GetUserByName(string name)
         {
+            users.Clear();
+            Update();
             var user = users.FirstOrDefault(s => s.Name == name);
             if (user == null)
             {
@@ -30,5 +39,6 @@ namespace GreenFairy.Data.Authentication
             }
             return user;
         }
+
     }
 }

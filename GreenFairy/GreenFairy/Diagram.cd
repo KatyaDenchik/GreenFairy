@@ -3,27 +3,27 @@
   <Class Name="GreenFairy.DomainLayer.DataBase.Entities.AdminEntity">
     <Position X="5.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAABAAAAAAAAAAAAEAAAAAAAACAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAACAAAAAAA=</HashCode>
       <FileName>DomainLayer\DataBase\Entities\AdminEntity.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="GreenFairy.DomainLayer.DataBase.Entities.ClientEntity">
     <Position X="9.25" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAABAAAAAAAAQABAEAAAACAAACIAAAAAA=</HashCode>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAQABAEAAAACAAACIAAAAAA=</HashCode>
       <FileName>DomainLayer\DataBase\Entities\ClientEntity.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="GreenFairy.DomainLayer.DataBase.Entities.OrderEntity" BaseTypeListCollapsed="true">
     <Position X="11" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAASAAAEAAAAABAAAAAAAAABAAEAAAAEAAACAAABAAQ=</HashCode>
+      <HashCode>AAASAAAEEAAAgAAAAAAAAAABAAEAAAAAAAACAAABAAQ=</HashCode>
       <FileName>DomainLayer\DataBase\Entities\OrderEntity.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.1" Collapsed="true" />
+    <Lollipop Position="0.205" Collapsed="true" />
   </Class>
   <Class Name="GreenFairy.DomainLayer.DataBase.Entities.OrderHistoryEntity" BaseTypeListCollapsed="true">
-    <Position X="12.75" Y="3.5" Width="1.5" />
+    <Position X="16" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAECAAAAAAAAABAAAAAAAAAAAAEAAAAEAAACAAAAAAQ=</HashCode>
       <FileName>DomainLayer\DataBase\Entities\OrderHistoryEntity.cs</FileName>
@@ -33,7 +33,7 @@
   <Class Name="GreenFairy.DomainLayer.DataBase.Entities.PlantEntity" BaseTypeListCollapsed="true">
     <Position X="3.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAGAEAAAQAgADAAAAAAAASAAAEAAAAEAAACAAAAAAA=</HashCode>
+      <HashCode>AAEGAEAAAQAgACAAAAAAAASAAAEAAAAAAAACAAAAAAA=</HashCode>
       <FileName>DomainLayer\DataBase\Entities\PlantEntity.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -41,7 +41,7 @@
   <Class Name="GreenFairy.DomainLayer.DataBase.Entities.Abstract.UserEntity">
     <Position X="7.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAACAAABAAAAAAAAAAAAEAAAAGAAACAAAAAAA=</HashCode>
+      <HashCode>AAACAAAAACAAAAAEAAAAAAAAAAEAAAACAAACAAAAAAA=</HashCode>
       <FileName>DomainLayer\DataBase\Entities\Abstract\UserEntity.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />

@@ -18,7 +18,7 @@ namespace GreenFairy.DomainLayer.DataBase
         /// </summary>
         private static bool firstConnection = true;
 
-        //Add-Migration SecondMigration
+        //Add-Migration FourdMigration
         public DataBaseContext()
         {
             if (firstConnection)
@@ -32,6 +32,7 @@ namespace GreenFairy.DomainLayer.DataBase
         /// Коллекции сущностей в виде таблиц
         /// </summary>
         public DbSet<AdminEntity> AdminEntities { get; set; }
+        public DbSet<OrderedPlantEntity> OrderedPlantEntities { get; set; }
         public DbSet<ClientEntity> ClientEntities { get; set; }
         public DbSet<OrderEntity> OrderEntities { get; set; }
         public DbSet<PlantEntity> PlantEntities { get; set; }

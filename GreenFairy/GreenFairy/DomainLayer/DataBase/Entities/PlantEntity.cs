@@ -11,7 +11,6 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         public string Species { get; set; } = string.Empty; // Представляет пустую строку, чтобы в бд не писался NULL
         public string Group { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
-        public int Amount { get; set; }
         public double Price { get; set; }
         public string Description { get; set; } = string.Empty;
         public string Photo { get; set; } = string.Empty;
@@ -26,6 +25,11 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
             {
                 repository.Delete(itself);
             }
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
 
         public void SaveToDB(Repository repository)

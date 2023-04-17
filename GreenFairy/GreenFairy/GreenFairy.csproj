@@ -28,7 +28,12 @@
 
 	<ItemGroup>
 	  <Folder Include="Data\Conventer\" />
-	  <Folder Include="wwwroot\images\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="wwwroot\css\green.scss">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 
 </Project>

@@ -1,0 +1,166 @@
+﻿@page "/ordering"
+@inject IJSRuntime JSRuntime
+@inject EntityService entityService
+@inject DataBaseView dataBaseView
+@inject DialogService dialogService
+@inject UserAccountService service
+@inject AuthenticationStateProvider provider
+@inject Repository repo
+
+
+@using GreenFairy.Data
+@using GreenFairy.Data.Authentication;
+@using GreenFairy.Data.Helpers;
+@using GreenFairy.Data.Models;
+@using GreenFairy.DomainLayer.DataBase.Entities.Abstract
+@using GreenFairy.Enums;
+@using GreenFairy.ViewModels
+@using GreenFairy.DomainLayer.DataBase
+@using GreenFairy.DomainLayer.DataBase.Entities
+
+
+<h1 style="flex: 1; background: rgba(147, 205, 163, 0.28);">
+    Green Фея
+</h1>
+<RadzenText TextStyle="TextStyle.H4" TextAlign="TextAlign.Center">Оформлення замовлення</RadzenText>
+<RadzenText TextStyle="TextStyle.H4" TextAlign="TextAlign.Center">Ваше замовлення</RadzenText>
+<RadzenDataGrid @ref=Grid Data="@plantModels" Count="@Order.Plants.Count" TItem="PlantModel" Style=" display: flex; justify-content: start; align-items: start;">
+    <Columns>
+
+        <RadzenDataGridColumn TItem="PlantModel" Width="80px" TextAlign="TextAlign.Left">
+            <Template Context="plantModel">
+                <div class="rz-p-12 rz-text-align-left">
+                    <RadzenImage Path="@plantModel.OrderedPlant.Plant.Photo.ToString()" Style="width: 150px; height: 150px; margin: 5px;" />
+                    <RadzenLabel Style="margin: 5px;">@plantModel.OrderedPlant.Plant.Name</RadzenLabel>
+                    <RadzenNumeric Style="margin: 5px;" TValue="int" @bind-Value="plantModel.OrderedPlant.Amount" Min="1" Max="plantModel.MaxCount" />
+                    <RadzenBadge BadgeStyle="BadgeStyle.Success" Style="scrollbar-arrow-color; margin: 5px; font-size: 18px; " Text=@($"Ціна: {String.Format(new System.Globalization.CultureInfo("uk-UA"), "{0:C}", plantModel.Cost)}")></RadzenBadge>
+                </div>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+<RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
+    Оплата:
+</RadzenText>
+<div>
+    <select  @bind="@model.PaymentKind">
+
+        @foreach (var type in Enum.GetValues(typeof(PaymentKind)))
+        {
+            if ((PaymentKind)type != PaymentKind.NONE)
+            {
+                <option value="@type">@this.TranslatPaymentKind((PaymentKind)type)</option>
+            }
+        }
+
+    </select>
+</div>
+<RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
+    Доставка:
+</RadzenText>
+<div>
+    <select @bind="@model.DeliveryKind">
+
+        @foreach (var type in Enum.GetValues(typeof(DeliveryKind)))
+        {
+            if ((DeliveryKind)type != DeliveryKind.NONE)
+            {
+                <option value="@type">@this.TranslatDeliveryKind((DeliveryKind)type)</option>
+            }
+        }
+
+    </select>
+</div>
+<RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
+    Адреса доставки:
+</RadzenText>
+<RadzenTextBox @bind-Value="@model.AddresOfDelivery" />
+<RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
+    Коментар:
+</RadzenText>
+<RadzenTextBox @bind-Value="@model.Comment" />
+
+<RadzenButton Style="background: #5F8D6C;" Click="@SaveOrder">Оформити замовлення</RadzenButton>
+
+@code{
+    RadzenDataGrid<PlantModel>? Grid;
+    private List<PlantModel> plantModels = new();
+    public OrderEntity Order => User.CurentOrder;
+    public AnonUserAccaunt User = UserAccountService.CurrentUser;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        plantModels.AddRange(Order.Plants.Select(s => new PlantModel
+            {
+                MaxCount = repo.Get<OrderedPlantEntity>(p => p.Id == s.Id).First().Amount
+            }));
+
+        Grid?.Reload();
+    }
+    private class OrderingModel
+    {
+        public OrderEntity OrderEntity = new();
+
+        public PaymentKind PaymentKind { get => OrderEntity.PaymentKind; set => OrderEntity.PaymentKind = value; }
+
+        public DeliveryKind DeliveryKind { get => OrderEntity.DeliveryKind; set => OrderEntity.DeliveryKind = value; }
+
+        public string Comment { get => OrderEntity.Comment; set => OrderEntity.Comment = value; }
+
+        public string AddresOfDelivery { get => OrderEntity.AddressOfDelivery; set => OrderEntity.AddressOfDelivery = value; }
+
+
+
+
+    }
+    private OrderingModel model = new();
+
+    public string TranslatPaymentKind(PaymentKind paymentKind)
+    {
+        if (paymentKind == PaymentKind.Card)
+        {
+            return "Сплата на карту";
+        }
+        if (paymentKind == PaymentKind.COD)
+        {
+            return "Сплата після отримання товару";
+        }
+        return string.Empty;
+    }
+    public string TranslatDeliveryKind(DeliveryKind deliveryKind)
+    {
+        if (deliveryKind == DeliveryKind.Pickup)
+        {
+            return "Самовивіз";
+        }
+        if (deliveryKind == DeliveryKind.DeliveryCompany)
+        {
+            return "Поштою";
+        }
+        return string.Empty;
+    }
+    private async void SaveOrder()
+    {
+        if (model.PaymentKind == PaymentKind.NONE)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Заповніть поле оплати!");
+            return;
+        }
+        if (model.DeliveryKind == DeliveryKind.NONE)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Заповніть поле доставки!");
+            return;
+        }
+        if (model.AddresOfDelivery == null)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Заповніть поле адреси!");
+            return;
+        }
+        model.OrderEntity.Plants = plantModels.Select(s => s.OrderedPlant).ToList();
+
+        model.OrderEntity.SaveToDB(repo);
+
+       
+    }
+}

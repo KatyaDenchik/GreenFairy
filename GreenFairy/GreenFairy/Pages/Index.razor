@@ -1,5 +1,5 @@
 ﻿@page "/"
-@inject IJSRuntime js
+@inject IJSRuntime JSRuntime
 @inject EntityService entityService
 @inject DataBaseView dataBaseView
 @inject DialogService dialogService
@@ -7,42 +7,50 @@
 @inject AuthenticationStateProvider provider
 @inject Repository repo
 
+
 <PageTitle>Green Фея</PageTitle>
 @using GreenFairy.Data
 @using GreenFairy.Data.Authentication;
+@using GreenFairy.Data.Helpers;
 @using GreenFairy.DomainLayer.DataBase.Entities.Abstract
+@using GreenFairy.Enums;
 @using GreenFairy.ViewModels
 @using GreenFairy.DomainLayer.DataBase
 @using GreenFairy.DomainLayer.DataBase.Entities
 
 
-<h1>
-    Green Фея <RadzenImage class="col-xl-6"
-                           Path="https://i.pinimg.com/564x/c0/a3/0e/c0a30e6ab58ff8f798adef9a34846938.jpg"
-                           Style="width: 5%; margin: 1rem;">
-    </RadzenImage>
+<h1 style="flex: 1; background: rgba(147, 205, 163, 0.28);">
+    Green Фея
+    @*<RadzenImage Src="~/images/kandinsky-download-1681580103372.png" />*@
 </h1>
+
+<div style="font-family: 'Open Sans', sans-serif; font-size: 20px; display: flex; align-items: center; justify-content: flex-end;">
+    <RadzenText style="margin-right: 10px;">Пошук за назвою:</RadzenText>
+    <RadzenTextBox  oninput="@Sort"></RadzenTextBox>
+</div>
 <RadzenCard class="rz-mt-4">
-    <RadzenDataList PageSize="@size" WrapItems="true" AllowPaging="true"
-                    Data="@plants" TItem="PlantEntity">
+    <RadzenDataList @ref=plantGrid PageSize="@size" WrapItems="true" AllowPaging="true"
+                    Data="@plants" TItem="OrderedPlantEntity">
         <Template Context="plant">
             <RadzenCard Style="width: 250px">
-                <RadzenText TextStyle="TextStyle.Caption" Class="rz-mb-0">@(plant.Group)</RadzenText>
-                    <RadzenBadge BadgeStyle="BadgeStyle.Success" Text=@($"{String.Format(new System.Globalization.CultureInfo("uk-UA"), "{0:C}", plant.Price)}") />
-
-                    <hr style="border: none; background-color: var(--rz-white); height: 1px; margin: 1rem 0;" />
-                    <RadzenImage Click="@(()=>{OpenPlant(plant);})" Path="@plant.Photo.ToString()" Style="width: 250px; height: 250px;" />
-                    <hr style="border: none; background-color: var(--rz-white); height: 1px; margin: 1rem 0;" />
+               
+                <RadzenText TextStyle="TextStyle.Caption"  Class="rz-mb-0">@(plant.Plant.Group)</RadzenText>
+                    <RadzenBadge BadgeStyle="BadgeStyle.Success" Text=@($"{String.Format(new System.Globalization.CultureInfo("uk-UA"), "{0:C}", plant.Plant.Price)}") />
                     <RadzenStack Gap="1" AlignItems="AlignItems.Center">
-                        <RadzenText TextStyle="TextStyle.H6" Class="rz-mb-0">@(plant.Name)</RadzenText>
+                    <hr style="border: none; background-color: var(--rz-white); height: 1px; margin: 1rem 0;" />
+                        <RadzenImage Click="@(()=>{OpenPlant(plant);})" Path="@plant.Plant.Photo.ToString()" Style="width: 250px; height: 250px;" />
+                    <hr style="border: none; background-color: var(--rz-white); height: 1px; margin: 1rem 0;" />
+                   
+                        <RadzenText TextStyle="TextStyle.H6" Class="rz-mb-0">@(plant.Plant.Name)</RadzenText>
                         <a class="link-info" onclick="@(()=>{OpenPlant(plant);})">Опис рослини </a>
                         @if (plant.Amount > 0)
                     {
-                        <RadzenButton Style="background-color: #006400;" Click="@(()=>{AddToOrder(plant);})">Додати до кошику</RadzenButton>
+                        <RadzenButton Style="background: #5F8D6C;" Click="@(()=>{AddToOrder(plant);})" >Додати до кошику</RadzenButton>
                     }
+                    <Notification notificationMessage="@message" notificationClass="@notificationClass" notificationDisplay="@notificationDisplay" />
                     @if (plant.Amount == 0)
                     {
-                        <RadzenButton Style="background-color: #006400;" Disabled="true" Click="@(()=>{AddToOrder(plant);})">Немає в наявності</RadzenButton>
+                        <RadzenButton Style="background: rgba(95, 141, 108, 0.44);" Disabled="true" Click="@(()=>{AddToOrder(plant);})">Немає в наявності</RadzenButton>
                     }
                 </RadzenStack>
             </RadzenCard>
@@ -53,21 +61,43 @@
 
 @code {
     bool allowVirtualization;
-
-    IEnumerable<PlantEntity> plants;
-    IList<PlantEntity> selectedPlant;
+    string sortName;
+    RadzenDataList<OrderedPlantEntity>? plantGrid;
+    IEnumerable<OrderedPlantEntity> plants;
     int size => plants?.Count() ?? 0;
+    string message;
+    string notificationClass;
+    string notificationDisplay;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
 
-        plants = null;
-        plants = await Task.Run(() => repo.Get<PlantEntity>());
-        this.StateHasChanged();
 
+        plants = null;
+        plants = await Task.Run(() => repo.Get<OrderedPlantEntity>(s=>s.OrderingKind == OrderingKind.OnStorage));
+        PlantHelper.Plants = plants.ToList();
+        PlantHelper.SortPlants = plants.ToList();
+
+        PlantHelper.SortPlantsUpdate += async () =>
+        {
+            plants = PlantHelper.SortPlants;
+            InvokeAsync(StateHasChanged);
+        };
+
+        this.StateHasChanged();
     }
 
+    private void Sort(ChangeEventArgs obj)
+    {
+        var value = obj.Value.ToString();
+        if (value == string.Empty)
+        {
+            PlantHelper.SortPlants = PlantHelper.Plants;
+            return;
+        }
+        PlantHelper.SortPlants = PlantHelper.Plants.Where(s => s.Plant.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
+    }
     private string GetCollection(object obj)
     {
         var str = string.Empty;
@@ -82,16 +112,28 @@
         return str;
     }
 
-    public async Task OpenPlant(PlantEntity plant)
+    public async Task OpenPlant(OrderedPlantEntity plant)
     {
-        await dialogService.OpenAsync<PlantDescription>($"{plant.Name}",
+        await dialogService.OpenAsync<PlantDescription>($"{plant.Plant.Name}",
         new Dictionary<string, object>() { { "Plant", plant } },
              options: new DialogOptions() { Width = "700px", Height = "512px", ShowClose = false, ShowTitle = false, Resizable = true, Draggable = true, CloseDialogOnEsc = true });
     }
 
-    public void AddToOrder(PlantEntity plant)
+    public async Task AddToOrder(OrderedPlantEntity plant)
     {
         UserAccountService.CurrentUser.AddPlant(plant);
+        message = $"Рослину {plant.Plant.Name} додано до кошику";
+        notificationClass = "notification";
+        notificationDisplay = "block";
+
+        await Task.Delay(3000);
+        HideNotification();
+    }
+    [JSInvokable]
+    public void HideNotification()
+    {
+        notificationDisplay = "none";
+        StateHasChanged();
     }
 }
 

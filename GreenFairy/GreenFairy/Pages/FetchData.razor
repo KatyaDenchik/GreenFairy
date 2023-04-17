@@ -10,7 +10,7 @@
 @using GreenFairy.DomainLayer.DataBase
 @using GreenFairy.DomainLayer.DataBase.Entities
 
-<h1>Information</h1>
+<h1>Інформація про рослини, клієнтів, замовлення та адміністраторів</h1>
 
 <div>
     <select name="entities" id="entities" @bind="@dataBaseView.TabelName">
@@ -25,18 +25,19 @@
 
 @if (entities == null)
 {
-    <div class="col-md-4 p-3">
+     <div class="col-md-4 p-3">
         <RadzenCard>
             <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Завантаження</RadzenText>
             <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
         </RadzenCard>
     </div>
+ 
 }
 else
 {
     <RadzenDataGrid @ref=ordersGrid AllowFiltering="true" AllowRowSelectOnRowClick="true" AllowColumnResize="true" AllowColumnPicking="true"
-                AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true"
-                PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@selectedEntity
+                 FilterMode="FilterMode.Simple" AllowSorting="true" PageSize="5" AllowPaging="true"
+                PagerHorizontalAlign="HorizontalAlign.Left" FilterCaseSensitivity="@filterCaseSensitivity" ShowPagingSummary="true" LogicalFilterOperator="@logicalFilterOperator" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@selectedEntity
                 Data="@entities" Count="@dataBaseView.Entities.Count" TItem="IEntity">
         <Columns>
 
@@ -64,6 +65,7 @@ else
                         }
                         else if (property.PropertyType.Name.Contains("Collection"))
                         {
+
                             <RadzenTextBox Value="@GetCollection(property.GetValue(entity))" Change="(newValue)=>{dataBaseView.Change(entity, property, newValue);}"></RadzenTextBox>
 
                         }
@@ -73,22 +75,23 @@ else
                         }
                     </Template>
                 </RadzenDataGridColumn>
-            }
-
+                    }
         </Columns>
     </RadzenDataGrid>
 }
 
 
 
-<RadzenButton Click="()=>{dataBaseView.Save(); Reload();}">Зберегти</RadzenButton>
+<RadzenButton Style="background-color: #006400; margin: 5px;" Click="()=>{dataBaseView.Save(); Reload();}">Зберегти</RadzenButton>
 
-<RadzenButton Click="()=>{dataBaseView.Add();  Reload(); }">Додати</RadzenButton>
+<RadzenButton Style="background-color: #006400; margin: 5px;" Click="()=>{dataBaseView.Add();  Reload(); }">Додати</RadzenButton>
 
-<RadzenButton Click="()=>{dataBaseView.Delete(selectedEntity); Reload();}">Видалити</RadzenButton>
+<RadzenButton Style="background-color: #006400; margin: 5px;" Click="()=>{dataBaseView.Delete(selectedEntity); Reload();}">Видалити</RadzenButton>
 
 @code {
     RadzenDataGrid<IEntity>? ordersGrid;
+    LogicalFilterOperator logicalFilterOperator = LogicalFilterOperator.And;
+    FilterCaseSensitivity filterCaseSensitivity = FilterCaseSensitivity.CaseInsensitive;
 
     IList<IEntity> selectedEntity = new List<IEntity>();
 

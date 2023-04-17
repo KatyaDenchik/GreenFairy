@@ -1,5 +1,6 @@
 ﻿@page "/Basket"
 @using GreenFairy.Data.Authentication;
+@using GreenFairy.Data.Models;
 @using GreenFairy.DomainLayer.DataBase.Entities
 @using GreenFairy.DomainLayer.DataBase.Entities.Abstract;
 @using GreenFairy.DomainLayer.DataBase;
@@ -8,6 +9,8 @@
 @inject Repository repo
 @inject UserAccountService service
 @inject AuthenticationStateProvider provider
+@inject NavigationManager NavigationManager
+@inject NavigationManager navManager
 
 @if (Order.Plants.Count == 0)
 {
@@ -21,60 +24,81 @@
 }
 else
 {
-    <div >
-        <RadzenDataGrid @ref=Grid Data="@plantModels" Count="@Order.Plants.Count" TItem="PlantModel" Style=" display: flex; justify-content: start; align-items: start;">
+
+    <RadzenText TextStyle="TextStyle.H4" TextAlign="TextAlign.Center">Кошик</RadzenText>
+
+
+    <RadzenDataGrid @ref=Grid Data="@plantModels" Count="@Order.Plants.Count" TItem="PlantModel" Style=" display: flex; justify-content: start; align-items: start;">
         <Columns>
 
-            <RadzenDataGridColumn  TItem="PlantModel" Width="80px" TextAlign="TextAlign.Left">
+            <RadzenDataGridColumn TItem="PlantModel" Width="80px" TextAlign="TextAlign.Left">
                 <Template Context="plantModel">
-                        <div class="rz-p-12 rz-text-align-left">
-                        <RadzenImage Path="@plantModel.Plant.Photo.ToString()" Style="width: 150px; height: 150px;" />
-                        <RadzenLabel>@plantModel.Plant.Name</RadzenLabel>
-                        <RadzenNumeric TValue="int" @bind-Value="plantModel.Plant.Amount" Min="1" Max="plantModel.MaxCount" />
-                        <RadzenBadge BadgeStyle="BadgeStyle.Success" Style="scrollbar-arrow-color " Text=@($"Ціна: {String.Format(new System.Globalization.CultureInfo("uk-UA"), "{0:C}", plantModel.Cost)}")></RadzenBadge>
-                        <RadzenButton Click="()=>{DeletePlant(plantModel.Plant);}">Видалити з замовлення</RadzenButton>
-                        </div>
-                    </Template>
-                </RadzenDataGridColumn>
+                    <div class="rz-p-12 rz-text-align-left">
+                        <RadzenImage Path="@plantModel.OrderedPlant.Plant.Photo.ToString()" Style="width: 150px; height: 150px; margin: 5px;" />
+                        <RadzenLabel Style="margin: 5px;">@plantModel.OrderedPlant.Plant.Name</RadzenLabel>
+                        <RadzenNumeric Style="margin: 5px;" TValue="int" @bind-Value="plantModel.OrderedPlant.Amount" Min="1" Max="plantModel.MaxCount" />
+                        <RadzenBadge BadgeStyle="BadgeStyle.Success" Style="scrollbar-arrow-color; margin: 5px; font-size: 18px; " Text=@($"Ціна: {String.Format(new System.Globalization.CultureInfo("uk-UA"), "{0:C}", plantModel.Cost)}")></RadzenBadge>
+                        <RadzenButton Style="background-color: #006400; margin: 5px;" Click="()=>{DeletePlant(plantModel.OrderedPlant);}">Видалити з замовлення</RadzenButton>
+                    </div>
+                </Template>
+            </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
-        </div>
-   
-    
+
+    <RadzenStack Gap="1" AlignItems="AlignItems.Center">
+        <RadzenBadge BadgeStyle="BadgeStyle.Success" Style="scrollbar-arrow-color; margin: 5px; float: right; font-size: 18px;" Text=@($"Загальна ціна замовлення: {String.Format(new System.Globalization.CultureInfo("uk-UA"), "{0:C}", TotalCost)}")></RadzenBadge>
+
+        @if (userAccount?.Role != null && userAccount.Role == "Client")
+        {
+            <RadzenButton Style="background: #5F8D6C;" Click="@(e => OpenOrdering())">Оформити замовлення</RadzenButton>
+        }
+        else
+        {
+            <RadzenButton Style="background: #5F8D6C;" Click="@(e => OpenLogin())">Оформити замовлення</RadzenButton>
+        }
+    </RadzenStack>
+
 }
 
 @code {
     RadzenDataGrid<PlantModel>? Grid;
 
-    class PlantModel
-    {
-        public PlantEntity Plant;
 
-        public double Cost => Plant.Amount * Plant.Price;
-
-        public int MaxCount;
-    }
     private List<PlantModel> plantModels = new();
     public OrderEntity Order => User.CurentOrder;
 
     public AnonUserAccaunt User = UserAccountService.CurrentUser;
+    private UserAccount? userAccount { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        var authentication = await provider.GetAuthenticationStateAsync();
+        userAccount = service.GetUserByName(authentication.User.Identity.Name);
+
+
         await base.OnInitializedAsync();
-        plantModels.AddRange(Order.Plants.Select(s => new PlantModel 
-            { 
-            Plant = s, 
-            MaxCount = repo.Get<PlantEntity>(p=>p.Name == s.Name).First().Amount 
+        plantModels.AddRange(Order.Plants.Select(s => new PlantModel
+            {
+                MaxCount = repo.Get<OrderedPlantEntity>(p => p.Id == s.Id).First().Amount
             }));
+
+        Grid?.Reload();
     }
 
-    public void DeletePlant(PlantEntity plant)
+    public void DeletePlant(OrderedPlantEntity plant)
     {
         Order.Plants.Remove(plant);
-        plantModels.Remove(plantModels.Single(p => p.Plant.Name == plant.Name));
+        plantModels.Remove(plantModels.Single(p => p.OrderedPlant.Id == plant.Id));
         Grid.Reload();
     }
 
-
+    public double TotalCost => plantModels.Sum(p => p.Cost);
+    public void OpenLogin()
+    {
+        NavigationManager.NavigateTo("/login", true);
+    }
+    public void OpenOrdering()
+    {
+        NavigationManager.NavigateTo("/ordering", true);
+    }
 }

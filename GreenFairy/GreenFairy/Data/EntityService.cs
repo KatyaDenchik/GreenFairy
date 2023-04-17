@@ -20,6 +20,7 @@ namespace GreenFairy.Data
                 "ClientEntity" => repository.Get<ClientEntity>(),
                 "OrderEntity" => repository.Get<OrderEntity>(),
                 "PlantEntity" => repository.Get<PlantEntity>(),
+                "OrderedPlantEntity" => repository.Get<OrderedPlantEntity>(),
             };
         }
     }

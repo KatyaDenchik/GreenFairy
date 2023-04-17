@@ -23,8 +23,9 @@ namespace GreenFairy.ViewModels
       new EntityModel{Type= typeof(AdminEntity), Name ="Адміни" },
       new EntityModel{Type= typeof(ClientEntity), Name = "Кліенти" },
       new EntityModel{Type= typeof(PlantEntity), Name = "Рослини" },
-      new EntityModel{Type= typeof(OrderEntity), Name = "Замовлення"
-      }};
+      new EntityModel{Type= typeof(OrderedPlantEntity), Name = "Кількість рослин"},
+      new EntityModel{Type= typeof(OrderEntity), Name = "Замовлення"}
+        };
 
         // Имя таблицы
         private string tabelName;
@@ -73,7 +74,7 @@ namespace GreenFairy.ViewModels
         {
             // Создание сущности конкретного типа
             IEntity entity = (IEntity)Activator.CreateInstance(Type);
-            entity.Id = Entities.Last().Id + 1;
+            entity.Id = (Entities.LastOrDefault()?.Id ?? 0) + 1;
             Entities.Add(entity);
         }
         /// <summary>
@@ -91,7 +92,10 @@ namespace GreenFairy.ViewModels
                 {
                     var id = int.Parse(value);
                     newValue = repository.Get<ClientEntity>(s => s.Id == id).FirstOrDefault();
-
+                }
+                else if (property.PropertyType.Name == "PlantEntity")
+                {
+                    newValue = repository.Get<PlantEntity>(s => s.Name.Equals(value)).FirstOrDefault();
                 }
                 else if (property.Name == "Plants")
                 {
@@ -103,6 +107,7 @@ namespace GreenFairy.ViewModels
                     }
                     newValue = repository.Get<PlantEntity>(s => ids.Contains(s.Id)).ToList();
                 }
+
                 else if (property.Name.Contains("Kind"))
                 {
                     newValue = Enum.Parse(property.PropertyType, value);

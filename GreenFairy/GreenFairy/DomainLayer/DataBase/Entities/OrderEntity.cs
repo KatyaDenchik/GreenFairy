@@ -9,10 +9,11 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
     {
         public int Id { get; set; }
         public virtual ClientEntity Client { get; set; }
-        public virtual ICollection<PlantEntity> Plants { get; set; } = new List<PlantEntity>();
+        public virtual ICollection<OrderedPlantEntity> Plants { get; set; } = new List<OrderedPlantEntity>();
         public DeliveryKind DeliveryKind { get; set; }
         public PaymentKind PaymentKind { get; set; }
         public string Comment { get; set; } = string.Empty;
+        public string AddressOfDelivery { get; set; } = string.Empty;
         public int PlantsCount { get; set; }
         public DateTime DateAndTime { get; set; }
 

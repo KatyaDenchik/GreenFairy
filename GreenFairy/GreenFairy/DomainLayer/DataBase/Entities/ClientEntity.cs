@@ -6,7 +6,7 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
     {
         public string Name { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
-        public string Address { get; set; } = string.Empty;
+      
         public int Phone { get; set; }
         public virtual ICollection<OrderEntity> Orders { get; set; }
         public override void Delete(Repository repository)

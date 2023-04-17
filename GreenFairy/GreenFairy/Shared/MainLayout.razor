@@ -8,7 +8,7 @@
 @inject DialogService dialogService
 @inject NavigationManager navManager
 
-<PageTitle>GreenFairy</PageTitle>
+<PageTitle>Green Фея</PageTitle>
 
 <div class="page">
     <div class="sidebar">
@@ -18,17 +18,17 @@
     <RadzenDialog />
     <main>
         <div class="top-row px-4">
-            <RadzenButton Style="margin: 5px; background-color: #8FBC8F;" Click="OpenBasket">Кошик</RadzenButton>
-            <RadzenButton Style="margin: 5px; background-color: #8FBC8F;" Click="@(e => OpenAboutUs())">Про нас</RadzenButton>
-            <RadzenButton Style="margin: 5px; background-color: #8FBC8F;" Click="@(e => OpenPaymentAndDelivery())">Оплата та доставка</RadzenButton>
+            <RadzenButton Style="margin: 5px; background: #72BC87;" Click="OpenBasket">Кошик</RadzenButton>
+            <RadzenButton Style="margin: 5px; background: #72BC87;" Click="@(e => OpenAboutUs())">Про нас</RadzenButton>
+            <RadzenButton Style="margin: 5px; background: #72BC87;" Click="@(e => OpenPaymentAndDelivery())">Оплата та доставка</RadzenButton>
 
             <AuthorizeView>
                 <Authorized>
-                    <RadzenButton Style="margin: 5px; background-color: #006400;" Click="@(e => Logout())">Вийти</RadzenButton>
+                    <RadzenButton Style="margin: 5px; background: #5F8D6C;" Click="@(e => Logout())">Вийти</RadzenButton>
 
                 </Authorized>
                 <NotAuthorized>
-                    <RadzenButton Style="margin: 5px; background-color: #006400;" Click="@(e => Login())">Авторизуватися</RadzenButton>
+                    <RadzenButton class="rz-button" Style="margin: 5px; background: #5F8D6C;" Click="@(e => Login())">Авторизуватися</RadzenButton>
                 </NotAuthorized>
             </AuthorizeView>
         </div>
