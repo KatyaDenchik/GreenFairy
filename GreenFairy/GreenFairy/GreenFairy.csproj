@@ -27,7 +27,7 @@
   </ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Data\Conventer\" />
+	  <Folder Include="Data\Extensions\" />
 	</ItemGroup>
 
 	<ItemGroup>

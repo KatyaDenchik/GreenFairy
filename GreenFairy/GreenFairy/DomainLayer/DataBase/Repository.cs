@@ -1,4 +1,4 @@
-﻿using GreenFairy.Data.Extensions;
+﻿
 using GreenFairy.DomainLayer.DataBase.Entities.Abstract;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,7 +20,7 @@ namespace GreenFairy.DomainLayer.DataBase
             /// Получаем ссылку на таблицу с указанной сущностю
             var dbSet = Context.Set<T>();
             //Если таблица содержит эту сущность, то обновляем сущность
-            if (dbSet.Contains(entity))
+            if (dbSet.Contains(entity) || dbSet.Any(s=>s.Id == entity.Id))
             {   // Entry - метод для получения состояния сущности внутри бд
                 Context.Entry(entity).State = EntityState.Modified;
                 Context.SaveChanges();
@@ -52,7 +52,7 @@ namespace GreenFairy.DomainLayer.DataBase
             var dbSet = Context.Set<T>();
             return dbSet.Where(specification);
         }
-        
+
         /// <summary>
         /// Метод, который возвращает коллекцию сущностей определенного типа
         /// </summary>
@@ -97,6 +97,6 @@ namespace GreenFairy.DomainLayer.DataBase
         {
             Delete<T>(Get(specification));
         }
-        
+
     }
 }

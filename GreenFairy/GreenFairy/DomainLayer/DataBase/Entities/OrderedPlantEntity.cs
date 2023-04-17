@@ -14,7 +14,7 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         public virtual PlantEntity Plant { get; set; }
         public int Amount { get; set; }
         public OrderingKind OrderingKind { get; set; }
-
+        public virtual ICollection<OrderEntity> Orders { get; set; }
         public void Delete(Repository repository)
         {
             var itself = repository.Get<OrderedPlantEntity>(s => s.Id == this.Id);

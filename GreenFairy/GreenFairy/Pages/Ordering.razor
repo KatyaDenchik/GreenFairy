@@ -24,7 +24,7 @@
 </h1>
 <RadzenText TextStyle="TextStyle.H4" TextAlign="TextAlign.Center">Оформлення замовлення</RadzenText>
 <RadzenText TextStyle="TextStyle.H4" TextAlign="TextAlign.Center">Ваше замовлення</RadzenText>
-<RadzenDataGrid @ref=Grid Data="@plantModels" Count="@Order.Plants.Count" TItem="PlantModel" Style=" display: flex; justify-content: start; align-items: start;">
+<RadzenDataGrid @ref=Grid Data="@plantModels" Count="@Order.OrderedPlant.Count" TItem="PlantModel" Style=" display: flex; justify-content: start; align-items: start;">
     <Columns>
 
         <RadzenDataGridColumn TItem="PlantModel" Width="80px" TextAlign="TextAlign.Left">
@@ -91,8 +91,9 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        plantModels.AddRange(Order.Plants.Select(s => new PlantModel
+        plantModels.AddRange(Order.OrderedPlant.Select(s => new PlantModel
             {
+                OrderedPlant = s,
                 MaxCount = repo.Get<OrderedPlantEntity>(p => p.Id == s.Id).First().Amount
             }));
 
@@ -152,13 +153,29 @@
             await JSRuntime.InvokeVoidAsync("alert", "Заповніть поле доставки!");
             return;
         }
-        if (model.AddresOfDelivery == null)
+        if (string.IsNullOrEmpty(model.AddresOfDelivery))
         {
             await JSRuntime.InvokeVoidAsync("alert", "Заповніть поле адреси!");
             return;
         }
-        model.OrderEntity.Plants = plantModels.Select(s => s.OrderedPlant).ToList();
+        var orderedPlants = plantModels.Select(s => s.OrderedPlant).ToList();
+        model.OrderEntity.OrderedPlant = orderedPlants;
 
+        var plantsOnStorage = repo.Get<OrderedPlantEntity>(s => (s.OrderingKind == OrderingKind.OnStorage) && (orderedPlants.Any(p => p.Plant.Id == s.Plant.Id))).ToList();
+
+        foreach (var plantOnStorage in plantsOnStorage)
+        {
+            var orderedPlant = orderedPlants.First(p => p.Id == plantOnStorage.Id);
+            plantOnStorage.Amount -= orderedPlant.Amount;
+            plantOnStorage.SaveToDB(repo);
+            orderedPlant.Id = 0;
+        }
+        model.OrderEntity.DateAndTime = DateTime.UtcNow;
+
+        var authentication = await provider.GetAuthenticationStateAsync();
+        var userAccount = service.GetUserByName(authentication.User.Identity.Name);
+
+        model.OrderEntity.Client = repo.Get<ClientEntity>(s => s.Email == userAccount.Name).First();
         model.OrderEntity.SaveToDB(repo);
 
        

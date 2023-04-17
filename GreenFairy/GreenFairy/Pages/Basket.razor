@@ -12,7 +12,7 @@
 @inject NavigationManager NavigationManager
 @inject NavigationManager navManager
 
-@if (Order.Plants.Count == 0)
+@if (Order.OrderedPlant.Count == 0)
 {
     <div style="text-align:center;">
 
@@ -28,7 +28,7 @@ else
     <RadzenText TextStyle="TextStyle.H4" TextAlign="TextAlign.Center">Кошик</RadzenText>
 
 
-    <RadzenDataGrid @ref=Grid Data="@plantModels" Count="@Order.Plants.Count" TItem="PlantModel" Style=" display: flex; justify-content: start; align-items: start;">
+    <RadzenDataGrid @ref=Grid Data="@plantModels" Count="@Order.OrderedPlant.Count" TItem="PlantModel" Style=" display: flex; justify-content: start; align-items: start;">
         <Columns>
 
             <RadzenDataGridColumn TItem="PlantModel" Width="80px" TextAlign="TextAlign.Left">
@@ -77,8 +77,9 @@ else
 
 
         await base.OnInitializedAsync();
-        plantModels.AddRange(Order.Plants.Select(s => new PlantModel
+        plantModels.AddRange(Order.OrderedPlant.Select(s => new PlantModel
             {
+                OrderedPlant = s,
                 MaxCount = repo.Get<OrderedPlantEntity>(p => p.Id == s.Id).First().Amount
             }));
 
@@ -87,7 +88,7 @@ else
 
     public void DeletePlant(OrderedPlantEntity plant)
     {
-        Order.Plants.Remove(plant);
+        Order.OrderedPlant.Remove(plant);
         plantModels.Remove(plantModels.Single(p => p.OrderedPlant.Id == plant.Id));
         Grid.Reload();
     }

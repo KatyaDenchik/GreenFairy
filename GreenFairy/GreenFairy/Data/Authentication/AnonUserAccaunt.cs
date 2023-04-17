@@ -10,17 +10,23 @@ namespace GreenFairy.Data.Authentication
             Role = "Anon";
         }
 
-        public void AddPlant(OrderedPlantEntity orderedPlant)
+        public void AddPlant(OrderedPlantEntity orderedPlantOnStorage)
         {
-            orderedPlant.Amount = 1;
-            if (CurentOrder.Plants.Any(s=>s.Plant.Name== orderedPlant.Plant.Name))
+            var orderedPlant = new OrderedPlantEntity 
             {
-                var oldPlant = CurentOrder.Plants.First(s => s.Plant.Name == orderedPlant.Plant.Name);
+                Id = orderedPlantOnStorage.Id,
+                Plant = orderedPlantOnStorage.Plant, 
+                OrderingKind = Enums.OrderingKind.Ordered
+            };
+            orderedPlant.Amount = 1;
+            if (CurentOrder.OrderedPlant.Any(s=>s.Plant.Name== orderedPlant.Plant.Name))
+            {
+                var oldPlant = CurentOrder.OrderedPlant.First(s => s.Plant.Name == orderedPlant.Plant.Name);
                 oldPlant.Amount++;
             }
             else
             {
-                CurentOrder.Plants.Add(orderedPlant);
+                CurentOrder.OrderedPlant.Add(orderedPlant);
             }
         }
     }
