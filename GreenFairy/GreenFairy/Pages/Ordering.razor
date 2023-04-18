@@ -194,7 +194,7 @@
 
         var authentication = await provider.GetAuthenticationStateAsync();
         var userAccount = service.GetUserByName(authentication.User.Identity.Name);
-
+        model.OrderEntity.PlantsCount = orderedPlants.Sum(s => s.Amount);
         model.OrderEntity.Client = repo.Get<ClientEntity>(s => s.Email == userAccount.Name).First();
         model.OrderEntity.SaveToDB(repo);
 

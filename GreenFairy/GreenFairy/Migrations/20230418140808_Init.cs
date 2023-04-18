@@ -33,7 +33,6 @@ namespace GreenFairy.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Surname = table.Column<string>(type: "TEXT", nullable: false),
-                    Address = table.Column<string>(type: "TEXT", nullable: false),
                     Phone = table.Column<int>(type: "INTEGER", nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
                     Password = table.Column<string>(type: "TEXT", nullable: false)
@@ -52,10 +51,9 @@ namespace GreenFairy.Migrations
                     Species = table.Column<string>(type: "TEXT", nullable: false),
                     Group = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Amount = table.Column<int>(type: "INTEGER", nullable: false),
                     Price = table.Column<double>(type: "REAL", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
-                    Photo = table.Column<byte[]>(type: "BLOB", nullable: false)
+                    Photo = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,6 +70,7 @@ namespace GreenFairy.Migrations
                     DeliveryKind = table.Column<int>(type: "INTEGER", nullable: false),
                     PaymentKind = table.Column<int>(type: "INTEGER", nullable: false),
                     Comment = table.Column<string>(type: "TEXT", nullable: false),
+                    AddressOfDelivery = table.Column<string>(type: "TEXT", nullable: false),
                     PlantsCount = table.Column<int>(type: "INTEGER", nullable: false),
                     DateAndTime = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -87,38 +86,45 @@ namespace GreenFairy.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderEntityPlantEntity",
+                name: "OrderedPlantEntities",
                 columns: table => new
                 {
-                    OrdersId = table.Column<int>(type: "INTEGER", nullable: false),
-                    PlantsId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    PlantId = table.Column<int>(type: "INTEGER", nullable: true),
+                    Amount = table.Column<int>(type: "INTEGER", nullable: false),
+                    OrderingKind = table.Column<int>(type: "INTEGER", nullable: false),
+                    OrderId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderEntityPlantEntity", x => new { x.OrdersId, x.PlantsId });
+                    table.PrimaryKey("PK_OrderedPlantEntities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderEntityPlantEntity_OrderEntities_OrdersId",
-                        column: x => x.OrdersId,
+                        name: "FK_OrderedPlantEntities_OrderEntities_OrderId",
+                        column: x => x.OrderId,
                         principalTable: "OrderEntities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_OrderEntityPlantEntity_PlantEntities_PlantsId",
-                        column: x => x.PlantsId,
+                        name: "FK_OrderedPlantEntities_PlantEntities_PlantId",
+                        column: x => x.PlantId,
                         principalTable: "PlantEntities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderedPlantEntities_OrderId",
+                table: "OrderedPlantEntities",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderedPlantEntities_PlantId",
+                table: "OrderedPlantEntities",
+                column: "PlantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderEntities_ClientId",
                 table: "OrderEntities",
                 column: "ClientId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderEntityPlantEntity_PlantsId",
-                table: "OrderEntityPlantEntity",
-                column: "PlantsId");
         }
 
         /// <inheritdoc />
@@ -128,7 +134,7 @@ namespace GreenFairy.Migrations
                 name: "AdminEntities");
 
             migrationBuilder.DropTable(
-                name: "OrderEntityPlantEntity");
+                name: "OrderedPlantEntities");
 
             migrationBuilder.DropTable(
                 name: "OrderEntities");

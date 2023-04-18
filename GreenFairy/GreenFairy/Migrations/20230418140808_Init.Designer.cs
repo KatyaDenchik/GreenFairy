@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GreenFairy.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20230418135657_SeventhMigration")]
-    partial class SeventhMigration
+    [Migration("20230418140808_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -118,13 +118,13 @@ namespace GreenFairy.Migrations
                     b.Property<int>("Amount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int?>("OrderId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("OrderingKind")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("PlantId")
+                    b.Property<int?>("PlantId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -185,15 +185,11 @@ namespace GreenFairy.Migrations
                 {
                     b.HasOne("GreenFairy.DomainLayer.DataBase.Entities.OrderEntity", "Order")
                         .WithMany("OrderedPlants")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderId");
 
                     b.HasOne("GreenFairy.DomainLayer.DataBase.Entities.PlantEntity", "Plant")
                         .WithMany("OrderedPlants")
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PlantId");
 
                     b.Navigation("Order");
 

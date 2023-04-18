@@ -64,7 +64,7 @@ namespace GreenFairy.ViewModels
                     entity.SaveToDB(repository);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
             }
@@ -97,7 +97,7 @@ namespace GreenFairy.ViewModels
                 {
                     newValue = repository.Get<PlantEntity>(s => s.Name.Equals(value)).FirstOrDefault();
                 }
-                else if (property.Name == "Plants")
+                else if (property.Name == "OrderedPlants")
                 {
                     var ids = new List<int>();
 
@@ -105,7 +105,11 @@ namespace GreenFairy.ViewModels
                     {
                         ids.Add(int.Parse(item));
                     }
-                    newValue = repository.Get<PlantEntity>(s => ids.Contains(s.Id)).ToList();
+                    newValue = repository.Get<OrderedPlantEntity>(s => ids.Contains(s.Id)).ToList();
+                }
+                else if (property.Name == "Order")
+                {
+                    newValue = repository.Get<OrderEntity>(s => s.Id.Equals(value)).FirstOrDefault();
                 }
 
                 else if (property.Name.Contains("Kind"))

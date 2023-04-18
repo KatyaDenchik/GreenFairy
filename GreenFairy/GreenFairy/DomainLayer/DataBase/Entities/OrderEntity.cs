@@ -17,6 +17,10 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         public int PlantsCount { get; set; }
         public DateTime DateAndTime { get; set; }
 
+        public override string ToString()
+        {
+            return Id.ToString();
+        }
         public void Delete(Repository repository)
         {
             var itself = repository.Get<OrderEntity>(s => s.Id == this.Id);
@@ -28,7 +32,16 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
 
         public void SaveToDB(Repository repository)
         {
+            foreach (var plantEntity in OrderedPlants)
+            {
+                var plantId = plantEntity.Order?.Id;
+               if (plantId != null || plantId.Value != this.Id)
+                {
+                plantEntity.Order = this;
+                }
+            }
             repository.Create(this);
+            OrderedPlants = OrderedPlants.GroupBy(x => x.Id).Select(x => x.First()).ToList();
         }
     }
 

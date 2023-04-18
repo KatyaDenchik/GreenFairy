@@ -11,10 +11,10 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
     public class OrderedPlantEntity : IEntity
     {
         public int Id { get; set; }
-        public virtual PlantEntity Plant { get; set; }
+        public virtual PlantEntity? Plant { get; set; }
         public int Amount { get; set; }
         public OrderingKind OrderingKind { get; set; }
-        public virtual OrderEntity Order { get; set; }
+        public virtual OrderEntity? Order { get; set; }
         public void Delete(Repository repository)
         {
             var itself = repository.Get<OrderedPlantEntity>(s => s.Id == this.Id);
@@ -26,6 +26,13 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
 
         public void SaveToDB(Repository repository)
         {
+            var existInOreder = Order?.OrderedPlants.Any(s => s.Id == this.Id);
+
+            if (existInOreder != null && !existInOreder.Value)
+            {
+                Order.OrderedPlants.Add(this);
+            }
+
             repository.Create(this);
         }
     }
