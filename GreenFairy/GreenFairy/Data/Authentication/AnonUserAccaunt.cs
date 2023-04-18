@@ -19,14 +19,14 @@ namespace GreenFairy.Data.Authentication
                 OrderingKind = Enums.OrderingKind.Ordered
             };
             orderedPlant.Amount = 1;
-            if (CurentOrder.OrderedPlant.Any(s=>s.Plant.Name== orderedPlant.Plant.Name))
+            if (CurentOrder.OrderedPlants.Any(s=>s.Plant.Name== orderedPlant.Plant.Name))
             {
-                var oldPlant = CurentOrder.OrderedPlant.First(s => s.Plant.Name == orderedPlant.Plant.Name);
+                var oldPlant = CurentOrder.OrderedPlants.First(s => s.Plant.Name == orderedPlant.Plant.Name);
                 oldPlant.Amount++;
             }
             else
             {
-                CurentOrder.OrderedPlant.Add(orderedPlant);
+                CurentOrder.OrderedPlants.Add(orderedPlant);
             }
         }
     }

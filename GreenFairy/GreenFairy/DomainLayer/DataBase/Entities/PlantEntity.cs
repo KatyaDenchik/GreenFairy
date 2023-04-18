@@ -14,7 +14,7 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
         public double Price { get; set; }
         public string Description { get; set; } = string.Empty;
         public string Photo { get; set; } = string.Empty;
-
+        public virtual ICollection<OrderedPlantEntity> OrderedPlants { get; set; } = new List<OrderedPlantEntity>();
 
         // Каждая сущность сама себя удаляет или сохраняет, ибо в админской часте не ясно какой тип сущности
         public void Delete(Repository repository)
