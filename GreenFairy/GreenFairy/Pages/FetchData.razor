@@ -25,18 +25,18 @@
 
 @if (entities == null)
 {
-     <div class="col-md-4 p-3">
+    <div class="col-md-4 p-3">
         <RadzenCard>
             <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Завантаження</RadzenText>
             <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
         </RadzenCard>
     </div>
- 
+
 }
 else
 {
     <RadzenDataGrid @ref=ordersGrid AllowFiltering="true" AllowRowSelectOnRowClick="true" AllowColumnResize="true" AllowColumnPicking="true"
-                 FilterMode="FilterMode.Simple" AllowSorting="true" PageSize="5" AllowPaging="true"
+                FilterMode="FilterMode.Simple" AllowSorting="true" PageSize="5" AllowPaging="true"
                 PagerHorizontalAlign="HorizontalAlign.Left" FilterCaseSensitivity="@filterCaseSensitivity" ShowPagingSummary="true" LogicalFilterOperator="@logicalFilterOperator" SelectionMode="DataGridSelectionMode.Multiple" @bind-Value=@selectedEntity
                 Data="@entities" Count="@dataBaseView.Entities.Count" TItem="IEntity">
         <Columns>
@@ -54,9 +54,9 @@ else
                         {
                             <RadzenCard>
                                 <div>
-                                    <RadzenFileInput @bind-FileName=@fileName @bind-FileSize=@fileSize TValue="string" class="w-100"
-                                         ValueChanged=@(newValue=>{dataBaseView.Change(entity, property, newValue);}) />
+                                    <RadzenFileInput TValue="string" class="w-100" Change="newValue=>{dataBaseView.Change(entity, property, newValue);}" />
                                 </div>
+
                                 <div>
                                     <RadzenImage class="img-fluid" Path="@property.GetValue(entity).ToString()"></RadzenImage>
                                 </div>
@@ -75,7 +75,7 @@ else
                         }
                     </Template>
                 </RadzenDataGridColumn>
-                    }
+            }
         </Columns>
     </RadzenDataGrid>
 }
@@ -94,25 +94,13 @@ else
     FilterCaseSensitivity filterCaseSensitivity = FilterCaseSensitivity.CaseInsensitive;
 
     IList<IEntity> selectedEntity = new List<IEntity>();
-
     IEnumerable<IEntity> entities;
-    IEnumerable<PlantEntity> plants;
-    int progress;
-    string info;
-    void OnProgress(UploadProgressArgs args, string name)
-    {
-        info = $"%'{name}'/{args.Loaded} of {args.Total} bytes.";
-        progress = args.Progress;
-    }
 
     private async void Reload()
     {
         entities = await Task.Run(() => dataBaseView.Entities);
         await ordersGrid.Reload();
     }
-
-    string fileName;
-    long? fileSize;
 
     protected override async Task OnInitializedAsync()
     {

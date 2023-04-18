@@ -18,7 +18,7 @@ namespace GreenFairy.DomainLayer.DataBase
         /// </summary>
         private static bool firstConnection = true;
 
-        //Add-Migration Init
+        //Add-Migration First
         public DataBaseContext()
         {
             if (firstConnection)

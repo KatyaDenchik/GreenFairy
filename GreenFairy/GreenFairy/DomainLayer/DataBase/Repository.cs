@@ -20,7 +20,7 @@ namespace GreenFairy.DomainLayer.DataBase
             /// Получаем ссылку на таблицу с указанной сущностю
             var dbSet = Context.Set<T>();
             //Если таблица содержит эту сущность, то обновляем сущность
-            if (dbSet.Contains(entity) || dbSet.Any(s=>s.Id == entity.Id))
+            if (dbSet.Contains(entity))
             {   // Entry - метод для получения состояния сущности внутри бд
                 Context.Entry(entity).State = EntityState.Modified;
                 Context.SaveChanges();

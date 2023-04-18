@@ -7,6 +7,7 @@
 @inject AuthenticationStateProvider provider
 @inject Repository repo
 
+@inject NavigationManager navigationManager
 
 @using GreenFairy.Data
 @using GreenFairy.Data.Authentication;
@@ -60,50 +61,53 @@
         </div>
     </div>
 
-     <div style="display: flex; align-items: center;">
-<RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
-    Доставка:
-</RadzenText>
-        <div style="margin-left: 1em;">
-    <select @bind="@model.DeliveryKind">
-
-        @foreach (var type in Enum.GetValues(typeof(DeliveryKind)))
-        {
-            if ((DeliveryKind)type != DeliveryKind.NONE)
-            {
-                <option value="@type">@this.TranslatDeliveryKind((DeliveryKind)type)</option>
-            }
-        }
-
-    </select>
-</div>
-    </div>
-
     <div style="display: flex; align-items: center;">
-<RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
-    Адреса доставки:
-</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
+            Доставка:
+        </RadzenText>
         <div style="margin-left: 1em;">
-<RadzenTextBox @bind-Value="@model.AddresOfDelivery" />
+            <select @bind="@model.DeliveryKind">
+
+                @foreach (var type in Enum.GetValues(typeof(DeliveryKind)))
+                {
+                    if ((DeliveryKind)type != DeliveryKind.NONE)
+                    {
+                        <option value="@type">@this.TranslatDeliveryKind((DeliveryKind)type)</option>
+                    }
+                }
+
+            </select>
         </div>
     </div>
 
     <div style="display: flex; align-items: center;">
-<RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
-    Коментар:
-</RadzenText>
+        <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
+            Адреса доставки:
+        </RadzenText>
         <div style="margin-left: 1em;">
-<RadzenTextBox @bind-Value="@model.Comment" />
-</div>
+            <RadzenTextBox @bind-Value="@model.AddresOfDelivery" />
+        </div>
+    </div>
+
+    <div style="display: flex; align-items: center;">
+        <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
+            Коментар:
+        </RadzenText>
+        <div style="margin-left: 1em;">
+            <RadzenTextBox @bind-Value="@model.Comment" />
+        </div>
     </div>
     <div><RadzenButton Style="background: #5F8D6C; margin-top: 30px;" Click="@SaveOrder">Оформити замовлення</RadzenButton></div>
-
+   @* <Notification notificationMessage="@message" notificationClass="@notificationClass" notificationDisplay="@notificationDisplay" />*@
 </RadzenStack>
-@code{
+@code {
     RadzenDataGrid<PlantModel>? Grid;
     private List<PlantModel> plantModels = new();
     public OrderEntity Order => User.CurentOrder;
     public AnonUserAccaunt User = UserAccountService.CurrentUser;
+    //string message;
+    //string notificationClass;
+    //string notificationDisplay;
     public double TotalCost => plantModels.Sum(p => p.Cost);
     protected override async Task OnInitializedAsync()
     {
@@ -111,9 +115,9 @@
         plantModels.AddRange(Order.OrderedPlants.Select(s => new PlantModel
             {
                 OrderedPlant = s,
-                MaxCount = repo.Get<OrderedPlantEntity>(p => p.Id == s.Id).First().Amount
+                MaxCount = repo.Get<OrderedPlantEntity>(p => p.Plant.Name == s.Plant.Name).First(s => s.OrderingKind == OrderingKind.OnStorage).Amount
             }));
-
+        model.OrderEntity = Order;
         Grid?.Reload();
     }
     private class OrderingModel
@@ -127,9 +131,6 @@
         public string Comment { get => OrderEntity.Comment; set => OrderEntity.Comment = value; }
 
         public string AddresOfDelivery { get => OrderEntity.AddressOfDelivery; set => OrderEntity.AddressOfDelivery = value; }
-
-
-
 
     }
     private OrderingModel model = new();
@@ -175,20 +176,18 @@
             await JSRuntime.InvokeVoidAsync("alert", "Заповніть поле адреси!");
             return;
         }
-        var orderedPlants = plantModels.Select(s => s.OrderedPlant).ToList();
-        model.OrderEntity.OrderedPlants = orderedPlants;
+        var orderedPlants = model.OrderEntity.OrderedPlants;
 
-        var plantsOnStorage = repo.Get<OrderedPlantEntity>(s => (s.OrderingKind == OrderingKind.OnStorage) && (orderedPlants.Any(p => p.Plant.Id == s.Plant.Id))).ToList();
+
+        var plantsOnStorage = repo.Get<OrderedPlantEntity>(s => (s.OrderingKind == OrderingKind.OnStorage) && (orderedPlants.Any(p => p.Plant.Name == s.Plant.Name))).ToList();
 
         foreach (var plantOnStorage in plantsOnStorage)
         {
-            var orderedPlant = orderedPlants.First(p => p.Id == plantOnStorage.Id);
+            var orderedPlant = orderedPlants.First(p => p.Plant.Name == plantOnStorage.Plant.Name);
             plantOnStorage.Amount -= orderedPlant.Amount;
-            plantOnStorage.SaveToDB(repo);
             orderedPlant.Order = model.OrderEntity;
             orderedPlant.Plant = plantOnStorage.Plant;
             orderedPlant.Plant.OrderedPlants.Add(orderedPlant);
-            orderedPlant.Id = 0;
         }
         model.OrderEntity.DateAndTime = DateTime.UtcNow;
 
@@ -197,7 +196,23 @@
         model.OrderEntity.PlantsCount = orderedPlants.Sum(s => s.Amount);
         model.OrderEntity.Client = repo.Get<ClientEntity>(s => s.Email == userAccount.Name).First();
         model.OrderEntity.SaveToDB(repo);
+        User.CurentOrder = new OrderEntity();
+
+        //message = $"Замовлення оформлено успішно!";
+        //notificationClass = "notification";
+        //notificationDisplay = "block";
+
+        //await Task.Delay(3000);
+        //HideNotification();
+
+        navigationManager.NavigateTo("/", true);
+    }
+    //[JSInvokable]
+    //public void HideNotification()
+    //{
+    //    notificationDisplay = "none";
+    //    StateHasChanged();
+    //}
 
        
     }
-}

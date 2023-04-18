@@ -4,7 +4,7 @@ namespace GreenFairy.Data.Authentication
 {
     public class AnonUserAccaunt : UserAccount
     {
-        public OrderEntity CurentOrder { get; } = new();
+        public OrderEntity CurentOrder { get; set; } = new();
         public AnonUserAccaunt()
         {
             Role = "Anon";
@@ -14,7 +14,6 @@ namespace GreenFairy.Data.Authentication
         {
             var orderedPlant = new OrderedPlantEntity 
             {
-                Id = orderedPlantOnStorage.Id,
                 Plant = orderedPlantOnStorage.Plant, 
                 OrderingKind = Enums.OrderingKind.Ordered
             };

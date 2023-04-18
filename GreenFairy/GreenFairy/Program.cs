@@ -10,22 +10,22 @@ using Radzen;
 //UploadController
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
-builder.Services.AddServerSideBlazor().AddHubOptions(o =>
-{
-	o.MaximumReceiveMessageSize = 10 * 1024 * 1024;
-});
+
 builder.Services.AddAuthenticationCore();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddTransient<Repository>();
 builder.Services.AddScoped<ProtectedSessionStorage>();
-builder.Services.AddSingleton<UserAccountService>();
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddSingleton<DataBaseView>();
 builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddSingleton<EntityService>();
-
+builder.Services.AddServerSideBlazor().AddHubOptions(o =>
+{
+    o.MaximumReceiveMessageSize = 10 * 1024 * 1024;
+});
+builder.Services.AddSingleton<UserAccountService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

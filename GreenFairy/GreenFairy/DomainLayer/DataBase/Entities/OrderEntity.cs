@@ -32,14 +32,6 @@ namespace GreenFairy.DomainLayer.DataBase.Entities
 
         public void SaveToDB(Repository repository)
         {
-            foreach (var plantEntity in OrderedPlants)
-            {
-                var plantId = plantEntity.Order?.Id;
-               if (plantId != null || plantId.Value != this.Id)
-                {
-                plantEntity.Order = this;
-                }
-            }
             repository.Create(this);
             OrderedPlants = OrderedPlants.GroupBy(x => x.Id).Select(x => x.First()).ToList();
         }

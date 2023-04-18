@@ -4,6 +4,7 @@
 @using GreenFairy.DomainLayer.DataBase.Entities
 @using GreenFairy.DomainLayer.DataBase.Entities.Abstract;
 @using GreenFairy.DomainLayer.DataBase;
+@using GreenFairy.Enums;
 @using GreenFairy.ViewModels;
 @inject Repository repo
 @inject UserAccountService service
@@ -79,7 +80,7 @@ else
         plantModels.AddRange(Order.OrderedPlants.Select(s => new PlantModel
             {
                 OrderedPlant = s,
-                MaxCount = repo.Get<OrderedPlantEntity>(p => p.Id == s.Id).First().Amount
+                MaxCount = repo.Get<OrderedPlantEntity>(p => p.Plant.Name == s.Plant.Name).First(s=>s.OrderingKind == OrderingKind.OnStorage).Amount
             }));
 
         Grid?.Reload();

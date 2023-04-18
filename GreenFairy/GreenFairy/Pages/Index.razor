@@ -6,9 +6,6 @@
 @inject UserAccountService service
 @inject AuthenticationStateProvider provider
 @inject Repository repo
-
-
-<PageTitle>Green Фея</PageTitle>
 @using GreenFairy.Data
 @using GreenFairy.Data.Authentication;
 @using GreenFairy.Data.Helpers;
@@ -17,6 +14,8 @@
 @using GreenFairy.ViewModels
 @using GreenFairy.DomainLayer.DataBase
 @using GreenFairy.DomainLayer.DataBase.Entities
+
+<PageTitle>Green Фея</PageTitle>
 
 
 <h1 style="flex: 1; background: rgba(147, 205, 163, 0.28);">
@@ -28,6 +27,16 @@
     <RadzenText style="margin-right: 10px;">Пошук за назвою:</RadzenText>
     <RadzenTextBox  oninput="@Sort"></RadzenTextBox>
 </div>
+@if (!plants.Any())
+{
+    <div class="col-md-4 p-3">
+        <RadzenCard>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Завантаження</RadzenText>
+            <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+        </RadzenCard>
+    </div>
+
+}
 <RadzenCard class="rz-mt-4">
     <RadzenDataList @ref=plantGrid PageSize="@size" WrapItems="true" AllowPaging="true"
                     Data="@plants" TItem="OrderedPlantEntity">
@@ -63,7 +72,7 @@
     bool allowVirtualization;
     string sortName;
     RadzenDataList<OrderedPlantEntity>? plantGrid;
-    IEnumerable<OrderedPlantEntity> plants;
+    IEnumerable<OrderedPlantEntity> plants = new List<OrderedPlantEntity>();
     int size => plants?.Count() ?? 0;
     string message;
     string notificationClass;
@@ -72,9 +81,6 @@
     {
         await base.OnInitializedAsync();
 
-
-
-        plants = null;
         plants = await Task.Run(() => repo.Get<OrderedPlantEntity>(s=>s.OrderingKind == OrderingKind.OnStorage));
         PlantHelper.Plants = plants.ToList();
         PlantHelper.SortPlants = plants.ToList();
@@ -85,7 +91,7 @@
             InvokeAsync(StateHasChanged);
         };
 
-        this.StateHasChanged();
+        this?.StateHasChanged();
     }
 
     private void Sort(ChangeEventArgs obj)
