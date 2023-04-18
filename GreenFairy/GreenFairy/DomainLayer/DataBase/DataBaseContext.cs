@@ -18,13 +18,13 @@ namespace GreenFairy.DomainLayer.DataBase
         /// </summary>
         private static bool firstConnection = true;
 
-        //Add-Migration FifthMigration
+        //Add-Migration SixthMigration
         public DataBaseContext()
         {
             if (firstConnection)
             {
                 //Закоментировать перед миграцией
-                Database.Migrate();
+                 Database.Migrate();
                 firstConnection = false;
             }
         }

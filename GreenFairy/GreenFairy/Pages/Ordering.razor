@@ -39,27 +39,32 @@
         </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
+<RadzenStack Gap="1" AlignItems="AlignItems.Center">
+    <RadzenBadge BadgeStyle="BadgeStyle.Success" Style="scrollbar-arrow-color; margin: 5px; float: right; font-size: 18px;" Text=@($"Загальна ціна замовлення: {String.Format(new System.Globalization.CultureInfo("uk-UA"), "{0:C}", TotalCost)}")></RadzenBadge>
+    <div style="display: flex; align-items: center;">
+        <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
+            Оплата:
+        </RadzenText>
+        <div style="margin-left: 1em;">
+            <select @bind="@model.PaymentKind">
 
-<RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
-    Оплата:
-</RadzenText>
-<div>
-    <select  @bind="@model.PaymentKind">
+                @foreach (var type in Enum.GetValues(typeof(PaymentKind)))
+                {
+                    if ((PaymentKind)type != PaymentKind.NONE)
+                    {
+                        <option value="@type">@this.TranslatPaymentKind((PaymentKind)type)</option>
+                    }
+                }
 
-        @foreach (var type in Enum.GetValues(typeof(PaymentKind)))
-        {
-            if ((PaymentKind)type != PaymentKind.NONE)
-            {
-                <option value="@type">@this.TranslatPaymentKind((PaymentKind)type)</option>
-            }
-        }
+            </select>
+        </div>
+    </div>
 
-    </select>
-</div>
+     <div style="display: flex; align-items: center;">
 <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
     Доставка:
 </RadzenText>
-<div>
+        <div style="margin-left: 1em;">
     <select @bind="@model.DeliveryKind">
 
         @foreach (var type in Enum.GetValues(typeof(DeliveryKind)))
@@ -72,22 +77,34 @@
 
     </select>
 </div>
+    </div>
+
+    <div style="display: flex; align-items: center;">
 <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
     Адреса доставки:
 </RadzenText>
+        <div style="margin-left: 1em;">
 <RadzenTextBox @bind-Value="@model.AddresOfDelivery" />
+        </div>
+    </div>
+
+    <div style="display: flex; align-items: center;">
 <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
     Коментар:
 </RadzenText>
+        <div style="margin-left: 1em;">
 <RadzenTextBox @bind-Value="@model.Comment" />
+</div>
+    </div>
+    <div><RadzenButton Style="background: #5F8D6C; margin-top: 30px;" Click="@SaveOrder">Оформити замовлення</RadzenButton></div>
 
-<RadzenButton Style="background: #5F8D6C;" Click="@SaveOrder">Оформити замовлення</RadzenButton>
-
+</RadzenStack>
 @code{
     RadzenDataGrid<PlantModel>? Grid;
     private List<PlantModel> plantModels = new();
     public OrderEntity Order => User.CurentOrder;
     public AnonUserAccaunt User = UserAccountService.CurrentUser;
+    public double TotalCost => plantModels.Sum(p => p.Cost);
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

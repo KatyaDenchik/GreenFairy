@@ -23,36 +23,56 @@
         </RadzenText>
 
         <RadzenStack Class="rz-my-12 rz-mx-auto rz-border-radius-3 rz-shadow-5" Style="margin: 2em; padding: 1em" AlignItems="AlignItems.Start">
-
+             <div style="display: flex; align-items: center;">
             <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
                 Імя:
             </RadzenText>
+                <div style="margin-left: 1em;">
             <RadzenTextBox @bind-Value="@model.Name" />
-
+            </div>
+    </div>
+      <div style="display: flex; align-items: center;">
             <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
                 Прізвище:
             </RadzenText>
+                <div style="margin-left: 1em;">
             <RadzenTextBox @bind-Value="@model.Surname" />
-             
+            </div>
+    </div>
+             <div style="display: flex; align-items: center;"> 
             <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
                 Контактний номер:
             </RadzenText>
+             <div style="margin-left: 1em;">
             <RadzenTextBox @bind-Value="@model.Phone" />
+                </div>
+            </div>
 
+              <div style="display: flex; align-items: center;"> 
             <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
                 Електрона пошта:
             </RadzenText>
+              <div style="margin-left: 1em;">
             <RadzenTextBox @bind-Value="@model.Email" />
+                </div>
+            </div>
 
+              <div style="display: flex; align-items: center;"> 
             <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em">
                 Пароль:
             </RadzenText>
+              <div style="margin-left: 1em;">
             <RadzenPassword @bind-Value="@model.Password" />
-
+                </div>
+            </div>
+             <div style="display: flex; align-items: center;"> 
             <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H2" Class="rz-mb-6" Style="margin-top: 1em;">
                 Повторіть пароль:
             </RadzenText>
+             <div style="margin-left: 1em;">
             <RadzenPassword @bind-Value="@model.RepitePassword" />
+                </div>
+            </div>
 
             <RadzenStack Orientation="Orientation.Horizontal">
                 <RadzenButton Style="margin-top: 2em; margin-right: 2em; padding: 1em; background: #5F8D6C;" Text="Зареєструватись" Click="@Register" />
@@ -116,6 +136,31 @@
         if (model.RepitePassword != model.Password)
         {
             await js.InvokeVoidAsync("alert", "Пароль не відповідає повторно введеному!");
+            return;
+        }
+        if (string.IsNullOrEmpty(model.Name))
+        {
+            await js.InvokeVoidAsync("alert", "Заповніть поле ім'я!");
+            return;
+        }
+        if (string.IsNullOrEmpty(model.Surname))
+        {
+            await js.InvokeVoidAsync("alert", "Заповніть поле прізвища!");
+            return;
+        }
+        if (string.IsNullOrEmpty(model.Email))
+        {
+            await js.InvokeVoidAsync("alert", "Заповніть поле пошти!");
+            return;
+        }
+        if (string.IsNullOrEmpty(model.Phone))
+        {
+            await js.InvokeVoidAsync("alert", "Заповніть поле телефону!");
+            return;
+        }
+        if (string.IsNullOrEmpty(model.Password))
+        {
+            await js.InvokeVoidAsync("alert", "Заповніть поле телефону!");
             return;
         }
 

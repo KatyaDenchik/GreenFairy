@@ -115,6 +115,9 @@ namespace GreenFairy.Migrations
                     b.Property<int>("Amount")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("OrderEntityId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("OrderingKind")
                         .HasColumnType("INTEGER");
 
@@ -122,6 +125,8 @@ namespace GreenFairy.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderEntityId");
 
                     b.HasIndex("PlantId");
 
@@ -162,21 +167,6 @@ namespace GreenFairy.Migrations
                     b.ToTable("PlantEntities");
                 });
 
-            modelBuilder.Entity("OrderEntityOrderedPlantEntity", b =>
-                {
-                    b.Property<int>("OrderedPlantId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("OrdersId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("OrderedPlantId", "OrdersId");
-
-                    b.HasIndex("OrdersId");
-
-                    b.ToTable("OrderEntityOrderedPlantEntity");
-                });
-
             modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.OrderEntity", b =>
                 {
                     b.HasOne("GreenFairy.DomainLayer.DataBase.Entities.ClientEntity", "Client")
@@ -190,6 +180,10 @@ namespace GreenFairy.Migrations
 
             modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.OrderedPlantEntity", b =>
                 {
+                    b.HasOne("GreenFairy.DomainLayer.DataBase.Entities.OrderEntity", null)
+                        .WithMany("OrderedPlant")
+                        .HasForeignKey("OrderEntityId");
+
                     b.HasOne("GreenFairy.DomainLayer.DataBase.Entities.PlantEntity", "Plant")
                         .WithMany()
                         .HasForeignKey("PlantId")
@@ -199,24 +193,14 @@ namespace GreenFairy.Migrations
                     b.Navigation("Plant");
                 });
 
-            modelBuilder.Entity("OrderEntityOrderedPlantEntity", b =>
-                {
-                    b.HasOne("GreenFairy.DomainLayer.DataBase.Entities.OrderedPlantEntity", null)
-                        .WithMany()
-                        .HasForeignKey("OrderedPlantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GreenFairy.DomainLayer.DataBase.Entities.OrderEntity", null)
-                        .WithMany()
-                        .HasForeignKey("OrdersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.ClientEntity", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("GreenFairy.DomainLayer.DataBase.Entities.OrderEntity", b =>
+                {
+                    b.Navigation("OrderedPlant");
                 });
 #pragma warning restore 612, 618
         }
